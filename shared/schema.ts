@@ -35,6 +35,13 @@ export const viewStats = pgTable("view_stats", {
   lastViewed: timestamp("last_viewed").defaultNow(),
 });
 
+export const siteStats = pgTable("site_stats", {
+  id: serial("id").primaryKey(),
+  totalViews: integer("total_views").default(0),
+  uniqueVisitors: integer("unique_visitors").default(0),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -51,9 +58,16 @@ export const insertViewStatsSchema = createInsertSchema(viewStats).omit({
   lastViewed: true,
 });
 
+export const insertSiteStatsSchema = createInsertSchema(siteStats).omit({
+  id: true,
+  lastUpdated: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
 export type ViewStats = typeof viewStats.$inferSelect;
 export type InsertViewStats = z.infer<typeof insertViewStatsSchema>;
+export type SiteStats = typeof siteStats.$inferSelect;
+export type InsertSiteStats = z.infer<typeof insertSiteStatsSchema>;

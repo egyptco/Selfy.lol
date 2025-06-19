@@ -46,9 +46,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const viewStats = await storage.incrementViewCount(profile.id);
+      await storage.incrementSiteViews(); // Increment site-wide views
       res.json(viewStats);
     } catch (error) {
       console.error("Error incrementing view count:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get site statistics
+  app.get("/api/site/stats", async (req, res) => {
+    try {
+      const stats = await storage.getSiteStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching site stats:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });

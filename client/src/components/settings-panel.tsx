@@ -44,6 +44,7 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
     socialLinks: profile.socialLinks,
     shareableUrl: profile.shareableUrl || "",
     audioUrl: profile.audioUrl || "",
+    discordId: profile.discordId,
   });
 
   const { toast } = useToast();
@@ -100,6 +101,7 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
       socialLinks: JSON.stringify(socialLinksObj),
       shareableUrl: formData.shareableUrl,
       audioUrl: formData.audioUrl,
+      discordId: formData.discordId,
     });
   };
 
@@ -219,20 +221,36 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
               </div>
 
               <div className="space-y-6">
-                {/* Discord Sync */}
-                <div className="flex items-center justify-between p-4 border border-border/20 rounded-xl">
-                  <div>
-                    <h3 className="font-semibold">مزامنة Discord</h3>
-                    <p className="text-sm text-foreground/60">تحديث الصورة والاسم من Discord</p>
+                {/* Discord Settings */}
+                <div className="space-y-4 p-4 border border-border/20 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold">إعدادات Discord</h3>
+                      <p className="text-sm text-foreground/60">ربط الحساب وتحديث البيانات</p>
+                    </div>
+                    <Button
+                      onClick={handleSyncDiscord}
+                      disabled={syncDiscordMutation.isPending}
+                      className="flex items-center gap-2"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${syncDiscordMutation.isPending ? 'animate-spin' : ''}`} />
+                      تحديث
+                    </Button>
                   </div>
-                  <Button
-                    onClick={handleSyncDiscord}
-                    disabled={syncDiscordMutation.isPending}
-                    className="flex items-center gap-2"
-                  >
-                    <RefreshCw className={`w-4 h-4 ${syncDiscordMutation.isPending ? 'animate-spin' : ''}`} />
-                    تحديث
-                  </Button>
+                  
+                  <div>
+                    <Label htmlFor="discordId">Discord User ID</Label>
+                    <Input
+                      id="discordId"
+                      value={formData.discordId}
+                      onChange={(e) => setFormData({ ...formData, discordId: e.target.value })}
+                      className="mt-1"
+                      placeholder="123456789012345678"
+                    />
+                    <p className="text-xs text-foreground/50 mt-1">
+                      لتغيير الحساب، أدخل Discord User ID الجديد
+                    </p>
+                  </div>
                 </div>
 
                 {/* Basic Info */}

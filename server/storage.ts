@@ -1,4 +1,4 @@
-import { users, profiles, viewStats, type User, type InsertUser, type Profile, type InsertProfile, type ViewStats, type InsertViewStats } from "@shared/schema";
+import { users, profiles, viewStats, siteStats, type User, type InsertUser, type Profile, type InsertProfile, type ViewStats, type InsertViewStats, type SiteStats, type InsertSiteStats } from "@shared/schema";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -13,12 +13,16 @@ export interface IStorage {
   getViewStats(profileId: number): Promise<ViewStats | undefined>;
   incrementViewCount(profileId: number): Promise<ViewStats>;
   createViewStats(stats: InsertViewStats): Promise<ViewStats>;
+  
+  getSiteStats(): Promise<SiteStats | undefined>;
+  incrementSiteViews(): Promise<SiteStats>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private profiles: Map<string, Profile>;
   private viewStatsMap: Map<number, ViewStats>;
+  private siteStatsData: SiteStats | null;
   private currentUserId: number;
   private currentProfileId: number;
   private currentViewStatsId: number;
@@ -27,12 +31,14 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.profiles = new Map();
     this.viewStatsMap = new Map();
+    this.siteStatsData = null;
     this.currentUserId = 1;
     this.currentProfileId = 1;
     this.currentViewStatsId = 1;
     
-    // Initialize with default profile
+    // Initialize with default profile and site stats
     this.initializeDefaultProfile();
+    this.initializeSiteStats();
   }
 
   private initializeDefaultProfile() {
@@ -77,6 +83,15 @@ export class MemStorage implements IStorage {
     this.viewStatsMap.set(1, defaultViewStats);
     this.currentProfileId = 2;
     this.currentViewStatsId = 2;
+  }
+
+  private initializeSiteStats() {
+    this.siteStatsData = {
+      id: 1,
+      totalViews: 0,
+      uniqueVisitors: 0,
+      lastUpdated: new Date(),
+    };
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -188,6 +203,28 @@ export class MemStorage implements IStorage {
     };
     this.viewStatsMap.set(stats.profileId, stats);
     return stats;
+  }
+
+  async getSiteStats(): Promise<SiteStats | undefined> {
+    return this.siteStatsData || undefined;
+  }
+
+  async incrementSiteViews(): Promise<SiteStats> {
+    if (!this.siteStatsData) {
+      this.siteStatsData = {
+        id: 1,
+        totalViews: 1,
+        uniqueVisitors: 1,
+        lastUpdated: new Date(),
+      };
+    } else {
+      this.siteStatsData = {
+        ...this.siteStatsData,
+        totalViews: (this.siteStatsData.totalViews || 0) + 1,
+        lastUpdated: new Date(),
+      };
+    }
+    return this.siteStatsData;
   }
 }
 

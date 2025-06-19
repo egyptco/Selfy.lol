@@ -1,13 +1,16 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Eye } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import ParticlesBackground from "./particles-background";
 import SocialIcons from "./social-icons";
 import ThemeSwitcher from "./theme-switcher";
 import AudioPlayer from "./audio-player";
 import SettingsPanel from "./settings-panel";
+import WelcomeScreen from "./welcome-screen";
+import Footer from "./footer";
+import SiteStats from "./site-stats";
 import { useTheme } from "@/hooks/use-theme";
 
 interface Profile {
@@ -30,6 +33,7 @@ interface Profile {
 
 export default function ProfilePage() {
   const { theme } = useTheme();
+  const [showWelcome, setShowWelcome] = useState(true);
   
   const { data: profile, isLoading } = useQuery<Profile>({
     queryKey: ["/api/profile"],
@@ -78,6 +82,10 @@ export default function ProfilePage() {
 
   const socialLinks = JSON.parse(profile.socialLinks || "{}");
 
+  if (showWelcome) {
+    return <WelcomeScreen onEnter={() => setShowWelcome(false)} />;
+  }
+
   return (
     <div className={`min-h-screen overflow-hidden relative theme-transition ${theme}`}>
       <ParticlesBackground />
@@ -97,12 +105,18 @@ export default function ProfilePage() {
         <div className="glass-effect rounded-xl px-4 py-2">
           <div className="flex items-center gap-2 text-foreground/80">
             <Eye className="w-4 h-4 text-accent" />
-            <span className="text-sm font-medium">
-              {profile.viewCount.toLocaleString()}
-            </span>
+            <div>
+              <span className="text-sm font-medium">
+                {profile.viewCount.toLocaleString()}
+              </span>
+              <p className="text-xs text-foreground/60">مشاهدات الملف</p>
+            </div>
           </div>
         </div>
       </motion.div>
+
+      {/* Site Statistics */}
+      <SiteStats />
 
       {/* Main Content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
@@ -225,6 +239,9 @@ export default function ProfilePage() {
           </motion.div>
         </motion.div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
