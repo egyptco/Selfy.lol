@@ -95,25 +95,7 @@ export default function ProfilePage() {
       <AudioPlayer />
       <SettingsPanel profile={profile} isOwner={profile.isOwner} />
       
-      {/* View Counter */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.5 }}
-        className="fixed bottom-6 right-6 z-50"
-      >
-        <div className="glass-effect rounded-xl px-4 py-2">
-          <div className="flex items-center gap-2 text-foreground/80">
-            <Eye className="w-4 h-4 text-accent" />
-            <div>
-              <span className="text-sm font-medium">
-                {profile.viewCount.toLocaleString()}
-              </span>
-              <p className="text-xs text-foreground/60">مشاهدات الملف</p>
-            </div>
-          </div>
-        </div>
-      </motion.div>
+
 
       {/* Site Statistics */}
       <SiteStats />
