@@ -116,6 +116,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get profile by shareable URL
+  app.get("/api/profile/share/:shareableUrl", async (req, res) => {
+    try {
+      const { shareableUrl } = req.params;
+      const profile = await storage.getProfileByShareableUrl(shareableUrl);
+      
+      if (!profile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      res.json(profile);
+    } catch (error) {
+      console.error("Error fetching shared profile:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Sync Discord data
+  app.post("/api/profile/:discordId/sync", async (req, res) => {
+    try {
+      const { discordId } = req.params;
+      const discordToken = process.env.DISCORD_BOT_TOKEN;
+      
+      if (!discordToken) {
+        return res.status(500).json({ message: "Discord bot token not configured" });
+      }
+
+      const response = await fetch(`https://discord.com/api/v10/users/${discordId}`, {
+        headers: {
+          'Authorization': `Bot ${discordToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return res.status(404).json({ message: "Discord user not found" });
+        }
+        throw new Error(`Discord API error: ${response.status}`);
+      }
+
+      const userData = await response.json();
+      
+      // Update profile with Discord data
+      const updates = {
+        username: userData.global_name || userData.username,
+        discordUsername: `${userData.username}#${userData.discriminator}`,
+        avatarUrl: userData.avatar 
+          ? `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png?size=512`
+          : `https://cdn.discordapp.com/embed/avatars/${parseInt(userData.discriminator) % 5}.png`,
+      };
+
+      const updatedProfile = await storage.updateProfile(discordId, updates);
+      
+      if (!updatedProfile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      res.json(updatedProfile);
+    } catch (error) {
+      console.error("Error syncing Discord data:", error);
+      res.status(500).json({ message: "Failed to sync Discord data" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

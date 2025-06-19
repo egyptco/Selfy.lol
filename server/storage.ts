@@ -6,6 +6,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   
   getProfile(discordId: string): Promise<Profile | undefined>;
+  getProfileByShareableUrl(shareableUrl: string): Promise<Profile | undefined>;
   createProfile(profile: InsertProfile): Promise<Profile>;
   updateProfile(discordId: string, updates: Partial<InsertProfile>): Promise<Profile | undefined>;
   
@@ -56,6 +57,10 @@ export class MemStorage implements IStorage {
         roblox: "https://roblox.com/users/yourid"
       }),
       viewCount: 1337,
+      isOwner: true,
+      shareableUrl: "ahmed-profile",
+      theme: "theme-dark",
+      audioUrl: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -95,11 +100,28 @@ export class MemStorage implements IStorage {
     return this.profiles.get(discordId);
   }
 
+  async getProfileByShareableUrl(shareableUrl: string): Promise<Profile | undefined> {
+    return Array.from(this.profiles.values()).find(
+      (profile) => profile.shareableUrl === shareableUrl,
+    );
+  }
+
   async createProfile(insertProfile: InsertProfile): Promise<Profile> {
     const id = this.currentProfileId++;
     const profile: Profile = { 
       ...insertProfile, 
       id,
+      status: insertProfile.status || "last seen unknown",
+      location: insertProfile.location || "Somewhere",
+      mood: insertProfile.mood || "Vibing",
+      avatarUrl: insertProfile.avatarUrl || null,
+      discordUsername: insertProfile.discordUsername || null,
+      socialLinks: insertProfile.socialLinks || "{}",
+      viewCount: insertProfile.viewCount || 0,
+      isOwner: insertProfile.isOwner || false,
+      shareableUrl: insertProfile.shareableUrl || null,
+      theme: insertProfile.theme || "theme-dark",
+      audioUrl: insertProfile.audioUrl || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -131,7 +153,7 @@ export class MemStorage implements IStorage {
     if (existing) {
       const updated: ViewStats = {
         ...existing,
-        viewCount: existing.viewCount + 1,
+        viewCount: (existing.viewCount || 0) + 1,
         lastViewed: new Date(),
       };
       this.viewStatsMap.set(profileId, updated);
@@ -139,7 +161,7 @@ export class MemStorage implements IStorage {
       // Also update profile view count
       const profile = Array.from(this.profiles.values()).find(p => p.id === profileId);
       if (profile) {
-        profile.viewCount = updated.viewCount;
+        profile.viewCount = updated.viewCount || 0;
         this.profiles.set(profile.discordId, profile);
       }
       
@@ -161,6 +183,7 @@ export class MemStorage implements IStorage {
     const stats: ViewStats = {
       ...insertStats,
       id,
+      viewCount: insertStats.viewCount || 0,
       lastViewed: new Date(),
     };
     this.viewStatsMap.set(stats.profileId, stats);

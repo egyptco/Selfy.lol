@@ -20,6 +20,10 @@ export const profiles = pgTable("profiles", {
   discordUsername: text("discord_username"),
   socialLinks: text("social_links"), // JSON string
   viewCount: integer("view_count").default(0),
+  isOwner: boolean("is_owner").default(false),
+  shareableUrl: text("shareable_url"),
+  theme: text("theme").default("theme-dark"),
+  audioUrl: text("audio_url"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

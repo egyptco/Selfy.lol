@@ -1,13 +1,12 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Eye } from "lucide-react";
-import { useEffect } from "react";
-import { apiRequest } from "@/lib/queryClient";
-import ParticlesBackground from "./particles-background";
-import SocialIcons from "./social-icons";
-import ThemeSwitcher from "./theme-switcher";
-import AudioPlayer from "./audio-player";
-import SettingsPanel from "./settings-panel";
+import { Eye, ArrowLeft } from "lucide-react";
+import { useParams, Link } from "wouter";
+import ParticlesBackground from "@/components/particles-background";
+import SocialIcons from "@/components/social-icons";
+import ThemeSwitcher from "@/components/theme-switcher";
+import AudioPlayer from "@/components/audio-player";
+import SettingsPanel from "@/components/settings-panel";
 import { useTheme } from "@/hooks/use-theme";
 
 interface Profile {
@@ -28,25 +27,20 @@ interface Profile {
   audioUrl: string | null;
 }
 
-export default function ProfilePage() {
+export default function SharedProfile() {
+  const { shareableUrl } = useParams();
   const { theme } = useTheme();
   
   const { data: profile, isLoading } = useQuery<Profile>({
-    queryKey: ["/api/profile"],
-  });
-
-  const incrementViewMutation = useMutation({
-    mutationFn: async () => {
-      if (!profile) throw new Error("No profile found");
-      return apiRequest("POST", `/api/profile/${profile.discordId}/view`);
+    queryKey: ["/api/profile/share", shareableUrl],
+    queryFn: async () => {
+      const response = await fetch(`/api/profile/share/${shareableUrl}`);
+      if (!response.ok) {
+        throw new Error('Profile not found');
+      }
+      return response.json();
     },
   });
-
-  useEffect(() => {
-    if (profile) {
-      incrementViewMutation.mutate();
-    }
-  }, [profile?.id]);
 
   if (isLoading) {
     return (
@@ -64,14 +58,24 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-xl text-red-500"
+          className="text-xl text-red-500 mb-4"
         >
           Profile not found
         </motion.div>
+        <Link href="/">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Go Home
+          </motion.button>
+        </Link>
       </div>
     );
   }
@@ -85,7 +89,7 @@ export default function ProfilePage() {
       {/* Controls */}
       <ThemeSwitcher />
       <AudioPlayer />
-      <SettingsPanel profile={profile} isOwner={profile.isOwner} />
+      <SettingsPanel profile={profile} isOwner={false} />
       
       {/* View Counter */}
       <motion.div
@@ -116,12 +120,12 @@ export default function ProfilePage() {
         >
           <div className="relative">
             <motion.div
-              className="mobile-avatar w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-accent/30 glow-pulse"
+              className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-accent/30 glow-pulse"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
               <img
-                src={profile.avatarUrl || `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random() * 5)}.png`}
+                src={profile.avatarUrl || "/api/placeholder/400/400"}
                 alt="Profile Picture"
                 className="w-full h-full object-cover"
               />
@@ -143,7 +147,7 @@ export default function ProfilePage() {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="mb-4"
         >
-          <h1 className="mobile-text text-4xl md:text-5xl font-bold text-center gradient-text">
+          <h1 className="text-4xl md:text-5xl font-bold text-center gradient-text">
             {profile.username}
           </h1>
         </motion.div>
@@ -167,9 +171,7 @@ export default function ProfilePage() {
           transition={{ delay: 0.5, duration: 0.6 }}
           className="mb-12"
         >
-          <div className="mobile-grid">
-            <SocialIcons socialLinks={socialLinks} />
-          </div>
+          <SocialIcons socialLinks={socialLinks} />
         </motion.div>
 
         {/* Info Cards */}
@@ -177,7 +179,7 @@ export default function ProfilePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.6 }}
-          className="mobile-grid grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl mobile-responsive"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl"
         >
           <motion.div
             whileHover={{ y: -5, scale: 1.02 }}

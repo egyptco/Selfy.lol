@@ -27,7 +27,7 @@ const socialPlatforms = [
 
 export default function SocialIcons({ socialLinks }: SocialIconsProps) {
   return (
-    <div className="grid grid-cols-4 md:grid-cols-8 gap-6">
+    <div className="grid grid-cols-4 md:grid-cols-8 gap-4 md:gap-6">
       {socialPlatforms.map((platform, index) => {
         const Icon = platform.icon;
         const href = socialLinks[platform.key] || "#";
@@ -50,9 +50,9 @@ export default function SocialIcons({ socialLinks }: SocialIconsProps) {
             whileTap={{ scale: 0.95 }}
             className="social-icon group"
           >
-            <div className={`w-14 h-14 ${platform.color} rounded-xl flex items-center justify-center transition-all duration-300 group-hover:shadow-lg`}>
+            <div className={`w-12 h-12 md:w-14 md:h-14 ${platform.color} rounded-xl flex items-center justify-center transition-all duration-300 group-hover:shadow-lg`}>
               <Icon 
-                className={`text-xl ${isSnapchat ? 'text-black' : 'text-white'} group-hover:scale-110 transition-transform duration-200`} 
+                className={`text-lg md:text-xl ${isSnapchat ? 'text-black' : 'text-white'} group-hover:scale-110 transition-transform duration-200`} 
               />
             </div>
           </motion.a>

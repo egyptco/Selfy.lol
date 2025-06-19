@@ -73,15 +73,13 @@ export default function AudioPlayer() {
         </div>
       </motion.div>
 
-      {/* Hidden audio element - replace with actual audio file */}
+      {/* Hidden audio element */}
       <audio
         ref={audioRef}
         loop
         preload="none"
-      >
-        {/* Add your audio source here */}
-        {/* <source src="/path/to/your/audio.mp3" type="audio/mpeg" /> */}
-      </audio>
+        src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav"
+      />
     </>
   );
 }

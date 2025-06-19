@@ -10,7 +10,7 @@ export default function ThemeSwitcher() {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.3 }}
-      className="fixed top-6 right-6 z-50"
+      className="fixed top-6 right-6 z-50 md:top-6 md:right-6"
     >
       <div className="glass-effect rounded-full p-2">
         <motion.button
