@@ -186,6 +186,40 @@ export default function ProfilePage() {
     },
   });
 
+  const uploadBackgroundMutation = useMutation({
+    mutationFn: async (file: File) => {
+      if (!profile) throw new Error("No profile found");
+      const formData = new FormData();
+      formData.append('background', file);
+      
+      const response = await fetch(`/api/profile/${profile.discordId}/upload-background`, {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to upload background');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setFormData({ ...formData, backgroundUrl: data.backgroundUrl });
+      queryClient.invalidateQueries({ queryKey: ["/api/profile"] });
+      toast({
+        title: "تم الرفع",
+        description: "تم رفع خلفية الملف الشخصي بنجاح",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "خطأ",
+        description: "فشل في رفع الخلفية",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSave = () => {
     // Filter out empty social links
     const filteredSocialLinks = Object.entries(socialLinksData)
@@ -823,17 +857,22 @@ export default function ProfilePage() {
                         className="mt-1"
                         placeholder={`رابط ${formData.backgroundType === "image" ? "الصورة" : "الفيديو"} أو ارفع ملف`}
                       />
-                      <input
-                        type="file"
-                        accept={formData.backgroundType === "image" ? "image/*" : "video/*"}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            console.log("Upload file:", file);
-                          }
-                        }}
-                        className="mt-2 text-sm text-foreground/70"
-                      />
+                      <div className="mt-2 flex items-center gap-2">
+                        <input
+                          type="file"
+                          accept={formData.backgroundType === "image" ? "image/*" : "video/*"}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              uploadBackgroundMutation.mutate(file);
+                            }
+                          }}
+                          className="text-sm text-foreground/70 flex-1"
+                        />
+                        {uploadBackgroundMutation.isPending && (
+                          <span className="text-sm text-blue-500">جاري الرفع...</span>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>

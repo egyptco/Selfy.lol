@@ -38,6 +38,24 @@ const upload = multer({
   }
 });
 
+const uploadBackground = multer({
+  storage: storage_multer,
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50MB limit for videos
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+      'video/mp4', 'video/webm', 'video/ogg', 'video/avi', 'video/mov'
+    ];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image and video files are allowed'));
+    }
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get profile by Discord ID
   app.get("/api/profile/:discordId", async (req, res) => {
@@ -203,6 +221,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error uploading avatar:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Upload background image/video
+  app.post("/api/profile/:discordId/upload-background", uploadBackground.single('background'), async (req, res) => {
+    try {
+      const { discordId } = req.params;
+      
+      if (!req.file) {
+        return res.status(400).json({ message: "No background file provided" });
+      }
+      
+      const backgroundUrl = `/uploads/${req.file.filename}`;
+      const backgroundType = req.file.mimetype.startsWith('video/') ? 'video' : 'image';
+      
+      const updatedProfile = await storage.updateProfile(discordId, { 
+        backgroundUrl,
+        backgroundType 
+      });
+      
+      if (!updatedProfile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      res.json({ 
+        message: "Background updated successfully", 
+        backgroundUrl,
+        backgroundType,
+        profile: updatedProfile 
+      });
+    } catch (error) {
+      console.error("Error uploading background:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });

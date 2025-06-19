@@ -31,19 +31,20 @@ const socialPlatforms = [
 
 export default function SocialIcons({ socialLinks, iconStyle = "default", iconColor = "#8B5CF6" }: SocialIconsProps) {
   const getIconStyles = (platform: any, index: number) => {
-    const baseClasses = "w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:shadow-lg";
+    const baseClasses = "w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:scale-105";
     
     switch (iconStyle) {
       case "transparent":
         return {
-          className: `${baseClasses} bg-transparent border-2 border-white/30 group-hover:border-white/50`,
+          className: `${baseClasses} bg-transparent border-2 border-white/30 group-hover:border-white/60 backdrop-blur-sm`,
+          backgroundColor: 'transparent',
           iconColor: platform.hexColor,
         };
       
       case "colored":
         return {
-          className: baseClasses,
-          backgroundColor: iconColor + "40",
+          className: `${baseClasses} backdrop-blur-sm`,
+          backgroundColor: iconColor + "30",
           iconColor: iconColor,
         };
       
@@ -51,14 +52,15 @@ export default function SocialIcons({ socialLinks, iconStyle = "default", iconCo
         const hue = (index * 60) % 360;
         const dynamicColor = `hsl(${hue}, 70%, 60%)`;
         return {
-          className: baseClasses,
-          backgroundColor: dynamicColor + "40",
+          className: `${baseClasses} backdrop-blur-sm`,
+          backgroundColor: dynamicColor + "30",
           iconColor: dynamicColor,
         };
       
       default:
         return {
-          className: `${baseClasses} ${platform.color}`,
+          className: `${baseClasses} ${platform.color} backdrop-blur-sm`,
+          backgroundColor: undefined,
           iconColor: platform.key === "snapchat" ? "#000000" : "#ffffff",
         };
     }
@@ -95,7 +97,10 @@ export default function SocialIcons({ socialLinks, iconStyle = "default", iconCo
           >
             <div 
               className={styles.className}
-              style={{ backgroundColor: styles.backgroundColor }}
+              style={{ 
+                backgroundColor: styles.backgroundColor,
+                border: iconStyle === "transparent" ? "2px solid rgba(255,255,255,0.3)" : "none"
+              }}
             >
               <Icon 
                 className="text-lg md:text-xl group-hover:scale-110 transition-transform duration-200"

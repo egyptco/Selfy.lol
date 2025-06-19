@@ -10,11 +10,11 @@ export default function NowPlaying({ audioTitle, audioUrl }: NowPlayingProps) {
   if (!audioTitle && !audioUrl) return null;
 
   const getSourceIcon = (url: string) => {
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-      return <span className="text-red-500 text-xs">YT</span>;
+    if (url?.includes('youtube.com') || url?.includes('youtu.be')) {
+      return <span className="text-red-500 text-xs font-bold">YT</span>;
     }
-    if (url.includes('spotify.com')) {
-      return <span className="text-green-500 text-xs">SP</span>;
+    if (url?.includes('spotify.com')) {
+      return <span className="text-green-500 text-xs font-bold">SP</span>;
     }
     return <Music className="w-3 h-3" />;
   };
@@ -29,10 +29,10 @@ export default function NowPlaying({ audioTitle, audioUrl }: NowPlayingProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.6 }}
+      transition={{ delay: 0.6, duration: 0.5 }}
       className="fixed bottom-32 left-1/2 transform -translate-x-1/2 z-50"
     >
-      <div className="glass-effect rounded-lg px-4 py-2 border border-border/20 max-w-xs">
+      <div className="glass-effect rounded-lg px-4 py-2 border border-border/20 max-w-xs backdrop-blur-md">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <Music className="w-4 h-4 text-purple-400 animate-pulse" />

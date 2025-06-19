@@ -52,7 +52,7 @@ export default function Home() {
       ) : (
         <>
           <ProfilePage />
-          {profile?.audioTitle && (
+          {(profile?.audioTitle || profile?.audioUrl) && (
             <NowPlaying 
               audioTitle={profile.audioTitle}
               audioUrl={profile.audioUrl}

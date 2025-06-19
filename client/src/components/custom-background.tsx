@@ -23,10 +23,17 @@ export default function CustomBackground({ backgroundType, backgroundUrl }: Cust
         <img
           src={backgroundUrl}
           alt="Custom Background"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
+          style={{
+            minWidth: '100%',
+            minHeight: '100%',
+            maxWidth: 'none',
+            maxHeight: 'none'
+          }}
           onError={() => setMediaError(true)}
+          onLoad={() => setMediaError(false)}
         />
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
       </div>
     );
   }
@@ -36,13 +43,21 @@ export default function CustomBackground({ backgroundType, backgroundUrl }: Cust
       <div className="fixed inset-0 z-0">
         <video
           src={backgroundUrl}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
+          style={{
+            minWidth: '100%',
+            minHeight: '100%',
+            maxWidth: 'none',
+            maxHeight: 'none'
+          }}
           autoPlay
           loop
           muted
+          playsInline
           onError={() => setMediaError(true)}
+          onLoadedData={() => setMediaError(false)}
         />
-        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" />
       </div>
     );
   }
