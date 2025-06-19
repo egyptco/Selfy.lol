@@ -179,65 +179,130 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
 
   if (!isOwner) {
     return (
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2 }}
-        className="fixed top-6 right-20 z-50"
-      >
-        <div className="glass-effect rounded-full p-2">
-          <motion.button
-            onClick={() => setIsShareOpen(true)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-blue-600 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
+      <>
+        {/* Share Button Only for Non-owners */}
+        <div className="fixed top-6 right-6 z-50">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            <Share2 className="w-5 h-5" />
-          </motion.button>
+            <div className="glass-effect rounded-full p-2">
+              <motion.button
+                onClick={() => setIsShareOpen(true)}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
+                title="مشاركة الملف الشخصي"
+              >
+                <Share2 className="w-5 h-5" />
+              </motion.button>
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
+
+        {/* Share Panel */}
+        <AnimatePresence>
+          {isShareOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+              onClick={() => setIsShareOpen(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-background/95 backdrop-blur-xl border border-border/20 rounded-2xl p-6 w-full max-w-md"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold gradient-text">مشاركة الملف الشخصي</h2>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsShareOpen(false)}
+                    className="hover:bg-foreground/10"
+                  >
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <Label>رابط المشاركة</Label>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Input
+                        value={shareUrl}
+                        readOnly
+                        className="flex-1"
+                      />
+                      <Button
+                        onClick={handleCopyLink}
+                        size="icon"
+                        variant="outline"
+                      >
+                        {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-foreground/60 text-center">
+                    شارك هذا الرابط مع الآخرين لرؤية ملفك الشخصي
+                  </p>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
     );
   }
 
   return (
     <>
-      {/* Settings Button */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2 }}
-        className="fixed top-6 right-20 z-50"
-      >
-        <div className="glass-effect rounded-full p-2">
-          <motion.button
-            onClick={() => setIsOpen(true)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-blue-600 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
-          >
-            <Settings className="w-5 h-5" />
-          </motion.button>
-        </div>
-      </motion.div>
+      {/* Control Buttons Container */}
+      <div className="fixed top-6 right-6 z-50 flex flex-row-reverse gap-3">
+        {/* Settings Button */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="glass-effect rounded-full p-2">
+            <motion.button
+              onClick={() => setIsOpen(true)}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-blue-600 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
+              title="إعدادات الملف الشخصي"
+            >
+              <Settings className="w-5 h-5" />
+            </motion.button>
+          </div>
+        </motion.div>
 
-      {/* Share Button */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.3 }}
-        className="fixed top-6 right-36 z-50"
-      >
-        <div className="glass-effect rounded-full p-2">
-          <motion.button
-            onClick={() => setIsShareOpen(true)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
-          >
-            <Share2 className="w-5 h-5" />
-          </motion.button>
-        </div>
-      </motion.div>
+        {/* Share Button */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <div className="glass-effect rounded-full p-2">
+            <motion.button
+              onClick={() => setIsShareOpen(true)}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
+              title="مشاركة الملف الشخصي"
+            >
+              <Share2 className="w-5 h-5" />
+            </motion.button>
+          </div>
+        </motion.div>
+      </div>
 
       {/* Settings Panel */}
       <AnimatePresence>
