@@ -6,7 +6,6 @@ import { apiRequest } from "@/lib/queryClient";
 import ParticlesBackground from "./particles-background";
 import SocialIcons from "./social-icons";
 import AudioPlayer from "./audio-player";
-import WelcomeScreen from "./welcome-screen";
 import Footer from "./footer";
 import SiteStats from "./site-stats";
 import { useTheme } from "@/hooks/use-theme";
@@ -41,7 +40,6 @@ interface Profile {
 
 export default function ProfilePage() {
   const { theme, switchTheme } = useTheme();
-  const [showWelcome, setShowWelcome] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -80,7 +78,6 @@ export default function ProfilePage() {
     spotify: "",
     snapchat: "",
     roblox: "",
-    youtube: "",
   });
 
   useEffect(() => {
@@ -114,7 +111,6 @@ export default function ProfilePage() {
           spotify: parsedSocialLinks.spotify || "",
           snapchat: parsedSocialLinks.snapchat || "",
           roblox: parsedSocialLinks.roblox || "",
-          youtube: parsedSocialLinks.youtube || "",
         });
       } catch (error) {
         console.error("Error parsing social links:", error);
@@ -315,10 +311,6 @@ export default function ProfilePage() {
   }
 
   const socialLinks = JSON.parse(profile.socialLinks || "{}");
-
-  if (showWelcome) {
-    return <WelcomeScreen onEnter={() => setShowWelcome(false)} />;
-  }
 
   return (
     <div className={`min-h-screen overflow-hidden relative theme-transition ${theme}`}>
@@ -757,16 +749,7 @@ export default function ProfilePage() {
                       />
                     </div>
 
-                    <div>
-                      <Label htmlFor="youtube">YouTube</Label>
-                      <Input
-                        id="youtube"
-                        value={socialLinksData.youtube}
-                        onChange={(e) => setSocialLinksData({ ...socialLinksData, youtube: e.target.value })}
-                        className="mt-1"
-                        placeholder="https://youtube.com/@yourchannel"
-                      />
-                    </div>
+
                   </div>
                 </div>
 

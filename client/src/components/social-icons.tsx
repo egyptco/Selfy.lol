@@ -8,7 +8,6 @@ import {
   SiSpotify,
   SiSnapchat,
   SiRoblox,
-  SiYoutube,
 } from "react-icons/si";
 
 interface SocialIconsProps {
@@ -26,7 +25,6 @@ const socialPlatforms = [
   { key: "spotify", icon: SiSpotify, color: "bg-[#1DB954]", hexColor: "#1DB954", name: "Spotify" },
   { key: "snapchat", icon: SiSnapchat, color: "bg-[#FFFC00]", hexColor: "#FFFC00", name: "Snapchat" },
   { key: "roblox", icon: SiRoblox, color: "bg-[#00A2FF]", hexColor: "#00A2FF", name: "Roblox" },
-  { key: "youtube", icon: SiYoutube, color: "bg-[#FF0000]", hexColor: "#FF0000", name: "YouTube" },
 ];
 
 export default function SocialIcons({ socialLinks, iconStyle = "default", iconColor = "#8B5CF6" }: SocialIconsProps) {
