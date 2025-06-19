@@ -108,7 +108,7 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
             onClick={() => setShowControls(!showControls)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
+            className="w-12 h-12 rounded-full bg-black border-2 border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
             title="عناصر التحكم في الصوت"
           >
             {!audioUrl ? (
@@ -137,7 +137,7 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
                   onClick={toggleAudio}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all duration-200"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-black/60 border border-white/20 hover:bg-white hover:text-black text-white transition-all duration-200"
                 >
                   <Music className="w-4 h-4" />
                   <span className="text-sm">{isPlaying ? "إيقاف" : "تشغيل"}</span>
@@ -148,7 +148,7 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
                   onClick={toggleMute}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all duration-200"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-black/60 border border-white/20 hover:bg-white hover:text-black text-white transition-all duration-200"
                 >
                   {getVolumeIcon()}
                   <span className="text-sm">{isMuted ? "إلغاء الكتم" : "كتم الصوت"}</span>

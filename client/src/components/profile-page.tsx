@@ -346,7 +346,7 @@ export default function ProfilePage() {
               }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="w-12 h-12 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
+              className="w-12 h-12 rounded-full bg-black border-2 border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
               title="تغيير المظهر"
             >
               <Palette className="w-5 h-5" />
@@ -369,7 +369,7 @@ export default function ProfilePage() {
                 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-blue-600 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
+                className="w-12 h-12 rounded-full bg-black border-2 border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
                 title="إعدادات الملف الشخصي"
               >
                 <Settings className="w-5 h-5" />
@@ -393,7 +393,7 @@ export default function ProfilePage() {
                 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
+                className="w-12 h-12 rounded-full bg-black border-2 border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
                 title="مشاركة الملف الشخصي"
               >
                 <Share2 className="w-5 h-5" />
@@ -579,7 +579,7 @@ export default function ProfilePage() {
                     <Button
                       onClick={handleImageUpload}
                       disabled={uploading}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 bg-black border-2 border-white/20 text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
                     >
                       <Upload className={`w-4 h-4 ${uploading ? 'animate-spin' : ''}`} />
                       {uploading ? "جاري الرفع..." : "رفع صورة"}
@@ -881,7 +881,7 @@ export default function ProfilePage() {
                         <Button
                           onClick={handleBackgroundUpload}
                           disabled={uploadingBackground}
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 bg-black border-2 border-white/20 text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
                         >
                           <Upload className={`w-4 h-4 ${uploadingBackground ? 'animate-spin' : ''}`} />
                           {uploadingBackground ? "جاري الرفع..." : "رفع ملف"}
@@ -931,7 +931,7 @@ export default function ProfilePage() {
                 <Button
                   onClick={handleSave}
                   disabled={updateProfileMutation.isPending}
-                  className="w-full flex items-center gap-2"
+                  className="w-full flex items-center gap-2 bg-black border-2 border-white/20 text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
                 >
                   <Save className="w-4 h-4" />
                   {updateProfileMutation.isPending ? "جاري الحفظ..." : "حفظ التغييرات"}
@@ -983,7 +983,7 @@ export default function ProfilePage() {
                     <Button
                       onClick={handleCopyLink}
                       size="icon"
-                      variant="outline"
+                      className="bg-black border-2 border-white/20 text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
                     >
                       {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                     </Button>
