@@ -58,6 +58,22 @@ export default function ProfilePage() {
     shareableUrl: profile?.shareableUrl || "",
     audioUrl: profile?.audioUrl || "",
     discordId: profile?.discordId || "",
+    joinDate: profile?.joinDate || "",
+  });
+
+  const [socialLinksData, setSocialLinksData] = useState({
+    discord: "",
+    instagram: "",
+    github: "",
+    telegram: "",
+    tiktok: "",
+    spotify: "",
+    snapchat: "",
+    roblox: "",
+    youtube: "",
+    twitter: "",
+    linkedin: "",
+    twitch: "",
   });
 
   useEffect(() => {
@@ -71,7 +87,29 @@ export default function ProfilePage() {
         shareableUrl: profile.shareableUrl || "",
         audioUrl: profile.audioUrl || "",
         discordId: profile.discordId,
+        joinDate: profile.joinDate || "",
       });
+
+      // Parse social links
+      try {
+        const parsedSocialLinks = JSON.parse(profile.socialLinks || "{}");
+        setSocialLinksData({
+          discord: parsedSocialLinks.discord || "",
+          instagram: parsedSocialLinks.instagram || "",
+          github: parsedSocialLinks.github || "",
+          telegram: parsedSocialLinks.telegram || "",
+          tiktok: parsedSocialLinks.tiktok || "",
+          spotify: parsedSocialLinks.spotify || "",
+          snapchat: parsedSocialLinks.snapchat || "",
+          roblox: parsedSocialLinks.roblox || "",
+          youtube: parsedSocialLinks.youtube || "",
+          twitter: parsedSocialLinks.twitter || "",
+          linkedin: parsedSocialLinks.linkedin || "",
+          twitch: parsedSocialLinks.twitch || "",
+        });
+      } catch (error) {
+        console.error("Error parsing social links:", error);
+      }
     }
   }, [profile]);
 
@@ -140,16 +178,21 @@ export default function ProfilePage() {
   });
 
   const handleSave = () => {
-    const socialLinksObj = JSON.parse(formData.socialLinks || "{}");
+    // Filter out empty social links
+    const filteredSocialLinks = Object.entries(socialLinksData)
+      .filter(([key, value]) => value.trim() !== "")
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
     updateProfileMutation.mutate({
       username: formData.username,
       status: formData.status,
       location: formData.location,
       mood: formData.mood,
-      socialLinks: JSON.stringify(socialLinksObj),
+      socialLinks: JSON.stringify(filteredSocialLinks),
       shareableUrl: formData.shareableUrl,
       audioUrl: formData.audioUrl,
       discordId: formData.discordId,
+      joinDate: formData.joinDate,
     });
   };
 
@@ -553,18 +596,155 @@ export default function ProfilePage() {
                       />
                     </div>
                   </div>
+
+                  <div>
+                    <Label htmlFor="joinDate">تاريخ الانضمام</Label>
+                    <Input
+                      id="joinDate"
+                      type="date"
+                      value={formData.joinDate}
+                      onChange={(e) => setFormData({ ...formData, joinDate: e.target.value })}
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
 
                 {/* Social Links */}
-                <div>
-                  <Label htmlFor="socialLinks">روابط التواصل الاجتماعي (JSON)</Label>
-                  <Textarea
-                    id="socialLinks"
-                    value={formData.socialLinks}
-                    onChange={(e) => setFormData({ ...formData, socialLinks: e.target.value })}
-                    className="mt-1 h-32"
-                    placeholder='{"discord": "https://discord.gg/yourserver", "instagram": "https://instagram.com/yourusername"}'
-                  />
+                <div className="space-y-4 p-4 border border-border/20 rounded-xl">
+                  <h3 className="font-semibold">روابط التواصل الاجتماعي</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="discord">Discord</Label>
+                      <Input
+                        id="discord"
+                        value={socialLinksData.discord}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, discord: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://discord.gg/yourserver"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="instagram">Instagram</Label>
+                      <Input
+                        id="instagram"
+                        value={socialLinksData.instagram}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, instagram: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://instagram.com/yourusername"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="github">GitHub</Label>
+                      <Input
+                        id="github"
+                        value={socialLinksData.github}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, github: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://github.com/yourusername"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="telegram">Telegram</Label>
+                      <Input
+                        id="telegram"
+                        value={socialLinksData.telegram}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, telegram: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://t.me/yourusername"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="tiktok">TikTok</Label>
+                      <Input
+                        id="tiktok"
+                        value={socialLinksData.tiktok}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, tiktok: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://tiktok.com/@yourusername"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="spotify">Spotify</Label>
+                      <Input
+                        id="spotify"
+                        value={socialLinksData.spotify}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, spotify: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://open.spotify.com/user/yourusername"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="snapchat">Snapchat</Label>
+                      <Input
+                        id="snapchat"
+                        value={socialLinksData.snapchat}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, snapchat: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://snapchat.com/add/yourusername"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="roblox">Roblox</Label>
+                      <Input
+                        id="roblox"
+                        value={socialLinksData.roblox}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, roblox: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://roblox.com/users/yourprofile"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="youtube">YouTube</Label>
+                      <Input
+                        id="youtube"
+                        value={socialLinksData.youtube}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, youtube: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://youtube.com/@yourchannel"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="twitter">Twitter/X</Label>
+                      <Input
+                        id="twitter"
+                        value={socialLinksData.twitter}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, twitter: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://twitter.com/yourusername"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="linkedin">LinkedIn</Label>
+                      <Input
+                        id="linkedin"
+                        value={socialLinksData.linkedin}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, linkedin: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://linkedin.com/in/yourprofile"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="twitch">Twitch</Label>
+                      <Input
+                        id="twitch"
+                        value={socialLinksData.twitch}
+                        onChange={(e) => setSocialLinksData({ ...socialLinksData, twitch: e.target.value })}
+                        className="mt-1"
+                        placeholder="https://twitch.tv/yourchannel"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Shareable URL */}

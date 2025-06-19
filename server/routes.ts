@@ -1,4 +1,5 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertProfileSchema } from "@shared/schema";
@@ -207,10 +208,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Serve uploaded files
-  app.use('/uploads', (req, res, next) => {
-    const uploadsPath = path.join(process.cwd(), 'uploads');
-    return require('express').static(uploadsPath)(req, res, next);
-  });
+  app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
   // Sync Discord data
   app.post("/api/profile/:discordId/sync", async (req, res) => {
