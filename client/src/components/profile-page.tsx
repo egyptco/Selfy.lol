@@ -71,9 +71,6 @@ export default function ProfilePage() {
     snapchat: "",
     roblox: "",
     youtube: "",
-    twitter: "",
-    linkedin: "",
-    twitch: "",
   });
 
   useEffect(() => {
@@ -103,9 +100,6 @@ export default function ProfilePage() {
           snapchat: parsedSocialLinks.snapchat || "",
           roblox: parsedSocialLinks.roblox || "",
           youtube: parsedSocialLinks.youtube || "",
-          twitter: parsedSocialLinks.twitter || "",
-          linkedin: parsedSocialLinks.linkedin || "",
-          twitch: parsedSocialLinks.twitch || "",
         });
       } catch (error) {
         console.error("Error parsing social links:", error);
@@ -709,39 +703,6 @@ export default function ProfilePage() {
                         onChange={(e) => setSocialLinksData({ ...socialLinksData, youtube: e.target.value })}
                         className="mt-1"
                         placeholder="https://youtube.com/@yourchannel"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="twitter">Twitter/X</Label>
-                      <Input
-                        id="twitter"
-                        value={socialLinksData.twitter}
-                        onChange={(e) => setSocialLinksData({ ...socialLinksData, twitter: e.target.value })}
-                        className="mt-1"
-                        placeholder="https://twitter.com/yourusername"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="linkedin">LinkedIn</Label>
-                      <Input
-                        id="linkedin"
-                        value={socialLinksData.linkedin}
-                        onChange={(e) => setSocialLinksData({ ...socialLinksData, linkedin: e.target.value })}
-                        className="mt-1"
-                        placeholder="https://linkedin.com/in/yourprofile"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="twitch">Twitch</Label>
-                      <Input
-                        id="twitch"
-                        value={socialLinksData.twitch}
-                        onChange={(e) => setSocialLinksData({ ...socialLinksData, twitch: e.target.value })}
-                        className="mt-1"
-                        placeholder="https://twitch.tv/yourchannel"
                       />
                     </div>
                   </div>

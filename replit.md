@@ -104,7 +104,7 @@ Changelog:
 - June 19, 2025. Initial setup
 - June 19, 2025. Added comprehensive profile image upload functionality with 5MB limit and multiple format support (JPG, PNG, GIF, WebP)
 - June 19, 2025. Fixed audio player to use profile-specific audio URLs and enabled auto-unmute on page load
-- June 19, 2025. Enhanced settings panel with individual input fields for 12 social platforms (Discord, Instagram, GitHub, Telegram, TikTok, Spotify, Snapchat, Roblox, YouTube, Twitter, LinkedIn, Twitch)
+- June 19, 2025. Enhanced settings panel with individual input fields for 9 social platforms (Discord, Instagram, GitHub, Telegram, TikTok, Spotify, Snapchat, Roblox, YouTube)
 - June 19, 2025. Added editable join date field in profile settings
 - June 19, 2025. Fixed all control buttons positioning and functionality (Settings, Share, Theme switcher)
 - June 19, 2025. Implemented proper static file serving for uploaded images
