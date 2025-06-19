@@ -33,7 +33,7 @@ export default function RegisterPage() {
         title: "تم إنشاء الحساب بنجاح",
         description: "مرحباً بك في الموقع!"
       });
-      setLocation("/");
+      setLocation("/dashboard");
     },
     onError: (error: any) => {
       toast({

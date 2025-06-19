@@ -249,6 +249,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Change password
+  app.put("/api/auth/user/:userId/password", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { currentPassword, newPassword } = req.body;
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "كلمة المرور الحالية والجديدة مطلوبتان" });
+      }
+
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: "كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل" });
+      }
+
+      // Get user account
+      const user = await storage.getUserAccount(userId);
+      if (!user) {
+        return res.status(404).json({ message: "المستخدم غير موجود" });
+      }
+
+      // Check current password
+      const hashedCurrentPassword = Buffer.from(currentPassword + userId + "salt").toString('base64');
+      if (user.password !== hashedCurrentPassword) {
+        return res.status(401).json({ message: "كلمة المرور الحالية غير صحيحة" });
+      }
+
+      // Hash new password
+      const hashedNewPassword = Buffer.from(newPassword + userId + "salt").toString('base64');
+
+      // Update password
+      const updatedUser = await storage.updateUserAccount(userId, {
+        password: hashedNewPassword
+      });
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "المستخدم غير موجود" });
+      }
+
+      res.json({ message: "تم تغيير كلمة المرور بنجاح" });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ message: "حدث خطأ أثناء تغيير كلمة المرور" });
+    }
+  });
+
   // Fetch Discord user info (proxy to avoid CORS)
   app.get("/api/discord/user/:userId", async (req, res) => {
     try {

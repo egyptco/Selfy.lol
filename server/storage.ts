@@ -11,7 +11,7 @@ export interface IStorage {
   getUserAccount(userId: string): Promise<UserAccount | undefined>;
   getUserAccountByEmail(email: string): Promise<UserAccount | undefined>;
   createUserAccount(account: InsertUserAccount): Promise<UserAccount>;
-  updateUserAccount(userId: string, updates: Partial<InsertUserAccount>): Promise<UserAccount | undefined>;
+  updateUserAccount(userId: string, updates: Partial<UserAccount>): Promise<UserAccount | undefined>;
   
   getProfile(discordId: string): Promise<Profile | undefined>;
   getProfileByShareableUrl(shareableUrl: string): Promise<Profile | undefined>;
@@ -156,7 +156,7 @@ export class DatabaseStorage implements IStorage {
     return account;
   }
 
-  async updateUserAccount(userId: string, updates: Partial<InsertUserAccount>): Promise<UserAccount | undefined> {
+  async updateUserAccount(userId: string, updates: Partial<UserAccount>): Promise<UserAccount | undefined> {
     const [account] = await db
       .update(userAccounts)
       .set({ ...updates, updatedAt: new Date() })

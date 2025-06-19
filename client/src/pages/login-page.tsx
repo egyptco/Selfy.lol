@@ -30,7 +30,7 @@ export default function LoginPage() {
         title: "تم تسجيل الدخول بنجاح",
         description: "مرحباً بعودتك!"
       });
-      setLocation("/");
+      setLocation("/dashboard");
     },
     onError: (error: any) => {
       toast({

@@ -89,6 +89,15 @@ export const insertUserAccountSchema = createInsertSchema(userAccounts).omit({
   updatedAt: true,
 });
 
+export const updateUserAccountSchema = createInsertSchema(userAccounts).omit({
+  id: true,
+  userId: true,
+  email: true,
+  joinDate: true,
+  createdAt: true,
+  updatedAt: true,
+}).partial();
+
 export const insertProfileSchema = createInsertSchema(profiles).omit({
   id: true,
   createdAt: true,
