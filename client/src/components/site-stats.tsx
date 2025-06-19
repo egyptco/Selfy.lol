@@ -22,7 +22,7 @@ export default function SiteStats() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.7 }}
-      className="fixed bottom-16 left-1/2 transform -translate-x-1/2 z-50"
+      className="fixed bottom-6 left-6 z-50"
     >
       <div className="glass-effect rounded-xl p-3 border border-border/20">
         <div className="flex items-center gap-2 text-foreground/80">

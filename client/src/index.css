@@ -160,6 +160,20 @@
     animation: shimmer 2s infinite;
   }
 
+  .animate-gradient-x {
+    background-size: 400% 400%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
   /* Responsive design */
   @media (max-width: 768px) {
     .mobile-responsive {

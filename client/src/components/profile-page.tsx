@@ -182,43 +182,7 @@ export default function ProfilePage() {
     },
   });
 
-  const uploadBackgroundMutation = useMutation({
-    mutationFn: async (file: File) => {
-      if (!profile) throw new Error("No profile found");
-      const formData = new FormData();
-      formData.append('background', file);
-      
-      const response = await fetch(`/api/profile/${profile.discordId}/upload-background`, {
-        method: 'POST',
-        body: formData,
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to upload background');
-      }
-      
-      return response.json();
-    },
-    onSuccess: (data) => {
-      setFormData({ 
-        ...formData, 
-        backgroundUrl: data.backgroundUrl,
-        backgroundType: data.backgroundType 
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/profile"] });
-      toast({
-        title: "تم الرفع",
-        description: "تم رفع خلفية الملف الشخصي بنجاح",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "خطأ",
-        description: "فشل في رفع الخلفية",
-        variant: "destructive",
-      });
-    },
-  });
+
 
   const handleSave = () => {
     // Filter out empty social links
@@ -816,47 +780,24 @@ export default function ProfilePage() {
                   <h3 className="text-lg font-semibold text-foreground">تخصيص الخلفية</h3>
                   
                   <div>
-                    <Label htmlFor="backgroundType">نوع الخلفية</Label>
+                    <Label htmlFor="backgroundType">نمط الخلفية</Label>
                     <select
                       id="backgroundType"
                       value={formData.backgroundType}
                       onChange={(e) => setFormData({ ...formData, backgroundType: e.target.value })}
                       className="mt-1 w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                     >
-                      <option value="particles">الافتراضي (جزيئات متحركة)</option>
-                      <option value="image">صورة مخصصة</option>
-                      <option value="video">فيديو مخصص</option>
+                      <option value="particles">جزيئات متحركة</option>
+                      <option value="gradient-blue">تدرج أزرق</option>
+                      <option value="gradient-purple">تدرج بنفسجي</option>
+                      <option value="gradient-sunset">تدرج غروب</option>
+                      <option value="gradient-ocean">تدرج محيط</option>
+                      <option value="matrix">نمط الماتريكس</option>
+                      <option value="stars">نجوم متحركة</option>
+                      <option value="waves">أمواج متحركة</option>
+                      <option value="geometric">أشكال هندسية</option>
                     </select>
                   </div>
-
-                  {(formData.backgroundType === "image" || formData.backgroundType === "video") && (
-                    <div>
-                      <Label htmlFor="backgroundUrl">رابط {formData.backgroundType === "image" ? "الصورة" : "الفيديو"}</Label>
-                      <Input
-                        id="backgroundUrl"
-                        value={formData.backgroundUrl}
-                        onChange={(e) => setFormData({ ...formData, backgroundUrl: e.target.value })}
-                        className="mt-1"
-                        placeholder={`رابط ${formData.backgroundType === "image" ? "الصورة" : "الفيديو"} أو ارفع ملف`}
-                      />
-                      <div className="mt-2 flex items-center gap-2">
-                        <input
-                          type="file"
-                          accept={formData.backgroundType === "image" ? "image/*" : "video/*"}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              uploadBackgroundMutation.mutate(file);
-                            }
-                          }}
-                          className="text-sm text-foreground/70 flex-1"
-                        />
-                        {uploadBackgroundMutation.isPending && (
-                          <span className="text-sm text-blue-500">جاري الرفع...</span>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* Save Button */}
