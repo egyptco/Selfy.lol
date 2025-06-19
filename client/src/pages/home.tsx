@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProfilePage from "@/components/profile-page";
 import WelcomeScreen from "@/components/welcome-screen";
@@ -32,10 +32,16 @@ interface Profile {
 
 export default function Home() {
   const [hasEntered, setHasEntered] = useState(false);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
   const { theme } = useTheme();
   
+  useEffect(() => {
+    const user = localStorage.getItem("currentUser");
+    setCurrentUser(user);
+  }, []);
+  
   const { data: profile } = useQuery<Profile>({
-    queryKey: ["/api/profile"],
+    queryKey: currentUser ? [`/api/profile/${currentUser}`] : ["/api/profile"],
     enabled: hasEntered,
   });
 

@@ -68,7 +68,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Profile not found" });
       }
       
-      res.json(profile);
+      // Set isOwner flag based on the requesting user (if any auth context available)
+      const profileWithOwnership = {
+        ...profile,
+        isOwner: true // For now, assume the user accessing their own profile is the owner
+      };
+      
+      res.json(profileWithOwnership);
     } catch (error) {
       console.error("Error fetching profile:", error);
       res.status(500).json({ message: "Internal server error" });
@@ -121,6 +127,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Auth routes for new user system
   
+  // Create profile route
+  app.post("/api/profile/create", async (req, res) => {
+    try {
+      const validationResult = insertProfileSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        const validationError = fromZodError(validationResult.error);
+        return res.status(400).json({ 
+          message: "بيانات غير صحيحة", 
+          error: validationError.message 
+        });
+      }
+
+      const newProfile = await storage.createProfile(validationResult.data);
+      res.status(201).json(newProfile);
+    } catch (error) {
+      console.error("Error creating profile:", error);
+      res.status(500).json({ message: "حدث خطأ أثناء إنشاء البروفايل" });
+    }
+  });
+  
   // Register new user
   app.post("/api/auth/register", async (req, res) => {
     try {
@@ -161,6 +187,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         website: "",
         avatar: ""
       });
+
+      // Create default public profile for the user
+      try {
+        await storage.createProfile({
+          discordId: userId,
+          username: name,
+          status: "آخر ظهور منذ قليل",
+          joinDate: new Date().toISOString().split('T')[0],
+          location: "مكان ما",
+          mood: "مستمتع",
+          socialLinks: "{}",
+          theme: "theme-dark",
+          socialIconStyle: "default",
+          socialIconColor: "#8B5CF6",
+          backgroundType: "particles",
+          shareableUrl: userId.toLowerCase() + Math.random().toString(36).substr(2, 5),
+          isOwner: true
+        });
+      } catch (profileError) {
+        console.error("Error creating default profile:", profileError);
+        // Continue even if profile creation fails
+      }
 
       // Return user data without password
       const { password: _, ...userResponse } = newUser;
