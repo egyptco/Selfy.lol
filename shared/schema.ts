@@ -24,6 +24,22 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// User accounts table for the new auth system
+export const userAccounts = pgTable("user_accounts", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().unique(),
+  password: text("password").notNull(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  bio: text("bio").default(""),
+  website: text("website").default(""),
+  avatar: text("avatar").default(""),
+  joinDate: timestamp("join_date").defaultNow(),
+  lastLogin: timestamp("last_login").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const profiles = pgTable("profiles", {
   id: serial("id").primaryKey(),
   discordId: text("discord_id").notNull().unique(),
@@ -65,6 +81,14 @@ export const siteStats = pgTable("site_stats", {
 
 export const insertUserSchema = createInsertSchema(users);
 
+export const insertUserAccountSchema = createInsertSchema(userAccounts).omit({
+  id: true,
+  joinDate: true,
+  lastLogin: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const insertProfileSchema = createInsertSchema(profiles).omit({
   id: true,
   createdAt: true,
@@ -84,6 +108,8 @@ export const insertSiteStatsSchema = createInsertSchema(siteStats).omit({
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UserAccount = typeof userAccounts.$inferSelect;
+export type InsertUserAccount = z.infer<typeof insertUserAccountSchema>;
 export type Profile = typeof profiles.$inferSelect;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
 export type ViewStats = typeof viewStats.$inferSelect;

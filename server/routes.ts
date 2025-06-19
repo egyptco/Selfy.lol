@@ -2,7 +2,8 @@ import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertProfileSchema } from "@shared/schema";
+import { insertProfileSchema, insertUserAccountSchema } from "@shared/schema";
+import { fromZodError } from "zod-validation-error";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -115,6 +116,136 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching site stats:", error);
       res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Auth routes for new user system
+  
+  // Register new user
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      // Validate input data
+      const validationResult = insertUserAccountSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        const validationError = fromZodError(validationResult.error);
+        return res.status(400).json({ 
+          message: "بيانات غير صحيحة", 
+          error: validationError.message 
+        });
+      }
+
+      const { userId, password, name, email } = validationResult.data;
+
+      // Check if user already exists
+      const existingUser = await storage.getUserAccount(userId);
+      if (existingUser) {
+        return res.status(409).json({ message: "هذا المعرف مستخدم بالفعل" });
+      }
+
+      // Check if email already exists
+      const existingEmail = await storage.getUserAccountByEmail(email);
+      if (existingEmail) {
+        return res.status(409).json({ message: "هذا البريد الإلكتروني مستخدم بالفعل" });
+      }
+
+      // Simple password hashing (base64 + salt)
+      const hashedPassword = Buffer.from(password + userId + "salt").toString('base64');
+
+      // Create new user account
+      const newUser = await storage.createUserAccount({
+        userId,
+        password: hashedPassword,
+        name,
+        email,
+        bio: "",
+        website: "",
+        avatar: ""
+      });
+
+      // Return user data without password
+      const { password: _, ...userResponse } = newUser;
+      res.status(201).json(userResponse);
+    } catch (error) {
+      console.error("Error registering user:", error);
+      res.status(500).json({ message: "حدث خطأ أثناء إنشاء الحساب" });
+    }
+  });
+
+  // Login user
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { userId, password } = req.body;
+
+      if (!userId || !password) {
+        return res.status(400).json({ message: "معرف المستخدم وكلمة المرور مطلوبان" });
+      }
+
+      // Get user account
+      const user = await storage.getUserAccount(userId);
+      if (!user) {
+        return res.status(401).json({ message: "معرف المستخدم أو كلمة المرور غير صحيحة" });
+      }
+
+      // Check password
+      const hashedPassword = Buffer.from(password + userId + "salt").toString('base64');
+      if (user.password !== hashedPassword) {
+        return res.status(401).json({ message: "معرف المستخدم أو كلمة المرور غير صحيحة" });
+      }
+
+      // Update last login
+      await storage.updateUserAccount(userId, { lastLogin: new Date() });
+
+      // Return user data without password
+      const { password: _, ...userResponse } = user;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("Error logging in user:", error);
+      res.status(500).json({ message: "حدث خطأ أثناء تسجيل الدخول" });
+    }
+  });
+
+  // Get user profile by userId
+  app.get("/api/auth/user/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const user = await storage.getUserAccount(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "المستخدم غير موجود" });
+      }
+
+      // Return user data without password
+      const { password: _, ...userResponse } = user;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "حدث خطأ أثناء جلب بيانات المستخدم" });
+    }
+  });
+
+  // Update user profile
+  app.put("/api/auth/user/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { name, bio, website, avatar } = req.body;
+
+      const updatedUser = await storage.updateUserAccount(userId, {
+        name,
+        bio,
+        website,
+        avatar
+      });
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "المستخدم غير موجود" });
+      }
+
+      // Return user data without password
+      const { password: _, ...userResponse } = updatedUser;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "حدث خطأ أثناء تحديث البيانات" });
     }
   });
 

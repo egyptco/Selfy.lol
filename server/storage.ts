@@ -1,4 +1,4 @@
-import { users, profiles, viewStats, siteStats, type User, type UpsertUser, type Profile, type InsertProfile, type ViewStats, type InsertViewStats, type SiteStats, type InsertSiteStats } from "@shared/schema";
+import { users, userAccounts, profiles, viewStats, siteStats, type User, type UpsertUser, type UserAccount, type InsertUserAccount, type Profile, type InsertProfile, type ViewStats, type InsertViewStats, type SiteStats, type InsertSiteStats } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
@@ -6,6 +6,12 @@ export interface IStorage {
   // User operations (mandatory for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  
+  // User account operations for new auth system
+  getUserAccount(userId: string): Promise<UserAccount | undefined>;
+  getUserAccountByEmail(email: string): Promise<UserAccount | undefined>;
+  createUserAccount(account: InsertUserAccount): Promise<UserAccount>;
+  updateUserAccount(userId: string, updates: Partial<InsertUserAccount>): Promise<UserAccount | undefined>;
   
   getProfile(discordId: string): Promise<Profile | undefined>;
   getProfileByShareableUrl(shareableUrl: string): Promise<Profile | undefined>;
@@ -129,6 +135,34 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return newStats;
     }
+  }
+
+  // User account operations for new auth system
+  async getUserAccount(userId: string): Promise<UserAccount | undefined> {
+    const [account] = await db.select().from(userAccounts).where(eq(userAccounts.userId, userId));
+    return account;
+  }
+
+  async getUserAccountByEmail(email: string): Promise<UserAccount | undefined> {
+    const [account] = await db.select().from(userAccounts).where(eq(userAccounts.email, email));
+    return account;
+  }
+
+  async createUserAccount(accountData: InsertUserAccount): Promise<UserAccount> {
+    const [account] = await db
+      .insert(userAccounts)
+      .values(accountData)
+      .returning();
+    return account;
+  }
+
+  async updateUserAccount(userId: string, updates: Partial<InsertUserAccount>): Promise<UserAccount | undefined> {
+    const [account] = await db
+      .update(userAccounts)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(userAccounts.userId, userId))
+      .returning();
+    return account;
   }
 }
 

@@ -6,11 +6,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import SharedProfile from "@/pages/shared-profile";
+import RegisterPage from "@/pages/register-page";
+import LoginPage from "@/pages/login-page";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/register" component={RegisterPage} />
+      <Route path="/login" component={LoginPage} />
       <Route path="/share/:shareableUrl" component={SharedProfile} />
       <Route component={NotFound} />
     </Switch>

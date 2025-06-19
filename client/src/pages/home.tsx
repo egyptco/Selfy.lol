@@ -4,6 +4,7 @@ import ProfilePage from "@/components/profile-page";
 import WelcomeScreen from "@/components/welcome-screen";
 import CustomBackground from "@/components/custom-background";
 import NowPlaying from "@/components/now-playing";
+import AuthButtons from "@/components/auth-buttons";
 import { useTheme } from "@/hooks/use-theme";
 
 interface Profile {
@@ -54,6 +55,9 @@ export default function Home() {
           <ProfilePage />
         </>
       )}
+      
+      {/* الأزرار الثابتة للمصادقة */}
+      <AuthButtons />
     </div>
   );
 }
