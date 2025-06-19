@@ -3,7 +3,12 @@ import { Palette } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 
 export default function ThemeSwitcher() {
-  const { switchTheme } = useTheme();
+  const { switchTheme, theme } = useTheme();
+
+  const handleThemeSwitch = () => {
+    console.log("Theme switch clicked, current theme:", theme);
+    switchTheme();
+  };
 
   return (
     <motion.div
@@ -14,7 +19,7 @@ export default function ThemeSwitcher() {
     >
       <div className="glass-effect rounded-full p-2">
         <motion.button
-          onClick={switchTheme}
+          onClick={handleThemeSwitch}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className="w-12 h-12 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
