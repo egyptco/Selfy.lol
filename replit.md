@@ -115,6 +115,9 @@ Changelog:
 - June 19, 2025. Implemented custom background support (particles, image, video) with file upload capability
 - June 19, 2025. Added "Now Playing" display component for current music with YouTube/Spotify source detection
 - June 19, 2025. Enhanced audio settings with title field for better music identification
+- June 19, 2025. Fixed audio player to always display control button even without audio URL
+- June 19, 2025. Added luxury gradient backgrounds (black-to-dark-purple and black-to-gray-white)
+- June 19, 2025. Cleaned up default social media links from demo profile
 
 ## User Preferences
 

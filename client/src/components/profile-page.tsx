@@ -810,6 +810,8 @@ export default function ProfilePage() {
                       <option value="gradient-purple">تدرج بنفسجي</option>
                       <option value="gradient-sunset">تدرج غروب</option>
                       <option value="gradient-ocean">تدرج محيط</option>
+                      <option value="gradient-luxury">تدرج فاخر (أسود - بنفسجي غامق)</option>
+                      <option value="gradient-elegant">تدرج أنيق (أسود - رمادي - أبيض)</option>
                       <option value="matrix">نمط الماتريكس</option>
                       <option value="stars">نجوم متحركة</option>
                       <option value="waves">أمواج متحركة</option>

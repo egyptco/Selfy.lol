@@ -12,6 +12,8 @@ const GradientBackground = ({ type }: { type: string }) => {
     "gradient-purple": "bg-gradient-to-br from-purple-600 via-pink-600 to-red-600",
     "gradient-sunset": "bg-gradient-to-br from-orange-500 via-red-500 to-pink-600",
     "gradient-ocean": "bg-gradient-to-br from-teal-400 via-blue-500 to-purple-600",
+    "gradient-luxury": "bg-gradient-to-br from-black via-purple-950 to-purple-900",
+    "gradient-elegant": "bg-gradient-to-br from-black via-gray-800 to-gray-600",
   };
   
   return (
