@@ -108,6 +108,9 @@ Changelog:
 - June 19, 2025. Added editable join date field in profile settings
 - June 19, 2025. Fixed all control buttons positioning and functionality (Settings, Share, Theme switcher)
 - June 19, 2025. Implemented proper static file serving for uploaded images
+- June 19, 2025. Added advanced audio controls with mute/unmute toggle, volume slider, and interactive control panel
+- June 19, 2025. Repositioned site statistics box to bottom-right for better alignment with copyright footer
+- June 19, 2025. Removed LinkedIn, Twitch, and Twitter/X from social media options per user request
 
 ## User Preferences
 
