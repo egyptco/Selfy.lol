@@ -36,9 +36,20 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
     };
   }, [isMuted, volume, audioUrl]);
 
+  const isDirectAudioFile = (url: string) => {
+    return url.endsWith('.mp3') || url.endsWith('.wav') || url.endsWith('.ogg') || url.endsWith('.m4a');
+  };
+
   const toggleAudio = async () => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !audioUrl) return;
+
+    // Only try to play direct audio files
+    if (!isDirectAudioFile(audioUrl)) {
+      // For YouTube/Spotify links, open in new tab
+      window.open(audioUrl, '_blank');
+      return;
+    }
 
     try {
       if (isPlaying) {
@@ -51,6 +62,8 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
       }
     } catch (error) {
       console.error("Audio play failed:", error);
+      // If direct audio fails, open link instead
+      window.open(audioUrl, '_blank');
     }
   };
 

@@ -40,10 +40,10 @@ export default function Home() {
 
   return (
     <div className={`min-h-screen w-full relative overflow-hidden ${theme}`}>
-      {hasEntered && (
+      {hasEntered && profile && (
         <CustomBackground 
-          backgroundType={profile?.backgroundType || "particles"}
-          backgroundUrl={profile?.backgroundUrl}
+          backgroundType={profile.backgroundType || "particles"}
+          backgroundUrl={profile.backgroundUrl}
         />
       )}
       
@@ -52,12 +52,6 @@ export default function Home() {
       ) : (
         <>
           <ProfilePage />
-          {(profile?.audioTitle || profile?.audioUrl) && (
-            <NowPlaying 
-              audioTitle={profile.audioTitle}
-              audioUrl={profile.audioUrl}
-            />
-          )}
         </>
       )}
     </div>

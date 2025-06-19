@@ -134,8 +134,10 @@ export default function ProfilePage() {
       if (!profile) throw new Error("No profile found");
       return apiRequest("PUT", `/api/profile/${profile.discordId}`, updates);
     },
-    onSuccess: () => {
+    onSuccess: (updatedProfile) => {
       queryClient.invalidateQueries({ queryKey: ["/api/profile"] });
+      // Force a page refresh to update background and icon styles
+      window.location.reload();
       toast({
         title: "تم الحفظ",
         description: "تم حفظ التغييرات بنجاح",
@@ -204,7 +206,11 @@ export default function ProfilePage() {
       return response.json();
     },
     onSuccess: (data) => {
-      setFormData({ ...formData, backgroundUrl: data.backgroundUrl });
+      setFormData({ 
+        ...formData, 
+        backgroundUrl: data.backgroundUrl,
+        backgroundType: data.backgroundType 
+      });
       queryClient.invalidateQueries({ queryKey: ["/api/profile"] });
       toast({
         title: "تم الرفع",
@@ -234,8 +240,13 @@ export default function ProfilePage() {
       socialLinks: JSON.stringify(filteredSocialLinks),
       shareableUrl: formData.shareableUrl,
       audioUrl: formData.audioUrl,
+      audioTitle: formData.audioTitle,
       discordId: formData.discordId,
       joinDate: formData.joinDate,
+      socialIconStyle: formData.socialIconStyle,
+      socialIconColor: formData.socialIconColor,
+      backgroundType: formData.backgroundType,
+      backgroundUrl: formData.backgroundUrl,
     });
   };
 
