@@ -9,7 +9,7 @@ import SharedProfile from "@/pages/shared-profile";
 import RegisterPage from "@/pages/register-page";
 import LoginPage from "@/pages/login-page";
 import UserDashboard from "@/components/user-dashboard";
-import PublicProfile from "@/components/public-profile";
+import ProfilePage from "@/components/profile-page";
 
 function Router() {
   return (
@@ -18,7 +18,7 @@ function Router() {
       <Route path="/register" component={RegisterPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/dashboard" component={UserDashboard} />
-      <Route path="/profile" component={PublicProfile} />
+      <Route path="/profile" component={ProfilePage} />
       <Route path="/share/:shareableUrl" component={SharedProfile} />
       <Route component={NotFound} />
     </Switch>

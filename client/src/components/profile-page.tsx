@@ -45,13 +45,20 @@ export default function ProfilePage() {
   const [copied, setCopied] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadingBackground, setUploadingBackground] = useState(false);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const backgroundFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const user = localStorage.getItem("currentUser");
+    setCurrentUser(user);
+  }, []);
   const queryClient = useQueryClient();
   
   const { data: profile, isLoading } = useQuery<Profile>({
-    queryKey: ["/api/profile"],
+    queryKey: currentUser ? [`/api/profile/${currentUser}`] : ["/api/profile"],
+    enabled: !!currentUser,
   });
 
   const [formData, setFormData] = useState({
@@ -293,15 +300,31 @@ export default function ProfilePage() {
     }
   }, [profile?.id]);
 
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center space-y-4"
+        >
+          <h2 className="text-2xl font-bold">غير مسجل الدخول</h2>
+          <p className="text-foreground/60">يرجى تسجيل الدخول لرؤية بروفايلك</p>
+        </motion.div>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-2xl font-semibold"
+          className="text-center space-y-4"
         >
-          Loading...
+          <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-2xl font-semibold">جاري تحميل البروفايل...</p>
         </motion.div>
       </div>
     );
@@ -309,13 +332,15 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center p-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-xl text-red-500"
+          className="text-center space-y-6 max-w-md"
         >
-          Profile not found
+          <h2 className="text-2xl font-bold">لم يتم العثور على البروفايل</h2>
+          <p className="text-foreground/60">يبدو أنك لم تنشئ بروفايلاً عاماً بعد. يتم إنشاؤه تلقائياً عند التسجيل.</p>
+          <p className="text-sm text-foreground/40">جرب تحديث الصفحة أو انتقل إلى لوحة التحكم</p>
         </motion.div>
       </div>
     );
