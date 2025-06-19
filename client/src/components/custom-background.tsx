@@ -11,7 +11,7 @@ export default function CustomBackground({ backgroundType, backgroundUrl }: Cust
 
   useEffect(() => {
     setMediaError(false);
-  }, [backgroundUrl]);
+  }, [backgroundUrl, backgroundType]);
 
   if (backgroundType === "particles" || !backgroundUrl || mediaError) {
     return <ParticlesBackground />;

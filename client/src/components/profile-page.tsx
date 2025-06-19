@@ -136,8 +136,6 @@ export default function ProfilePage() {
     },
     onSuccess: (updatedProfile) => {
       queryClient.invalidateQueries({ queryKey: ["/api/profile"] });
-      // Force a page refresh to update background and icon styles
-      window.location.reload();
       toast({
         title: "تم الحفظ",
         description: "تم حفظ التغييرات بنجاح",
