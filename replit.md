@@ -119,6 +119,9 @@ Changelog:
 - June 19, 2025. Added luxury gradient backgrounds (black-to-dark-purple and black-to-gray-white)
 - June 19, 2025. Cleaned up default social media links from demo profile
 - June 19, 2025. Added immersive dark rain theme with realistic falling raindrops and lightning effects
+- June 19, 2025. Added deep black background theme for maximum darkness effect
+- June 19, 2025. Implemented custom background upload functionality for images and videos (up to 50MB)
+- June 19, 2025. Enhanced background system to support user-uploaded media files
 
 ## User Preferences
 

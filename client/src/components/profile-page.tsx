@@ -44,7 +44,9 @@ export default function ProfilePage() {
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingBackground, setUploadingBackground] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const backgroundFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -182,7 +184,41 @@ export default function ProfilePage() {
     },
   });
 
-
+  const uploadBackgroundMutation = useMutation({
+    mutationFn: async (file: File) => {
+      if (!profile) throw new Error("No profile found");
+      const formData = new FormData();
+      formData.append('background', file);
+      
+      const response = await fetch(`/api/profile/${profile.discordId}/upload-background`, {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to upload background');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/profile"] });
+      toast({
+        title: "تم الرفع",
+        description: "تم رفع الخلفية بنجاح",
+      });
+      setUploadingBackground(false);
+      setFormData({ ...formData, backgroundType: "custom", backgroundUrl: data.backgroundUrl });
+    },
+    onError: () => {
+      toast({
+        title: "خطأ",
+        description: "فشل في رفع الخلفية",
+        variant: "destructive",
+      });
+      setUploadingBackground(false);
+    },
+  });
 
   const handleSave = () => {
     // Filter out empty social links
@@ -211,11 +247,23 @@ export default function ProfilePage() {
     fileInputRef.current?.click();
   };
 
+  const handleBackgroundUpload = () => {
+    backgroundFileInputRef.current?.click();
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setUploading(true);
       uploadImageMutation.mutate(file);
+    }
+  };
+
+  const handleBackgroundFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploadingBackground(true);
+      uploadBackgroundMutation.mutate(file);
     }
   };
 
@@ -812,13 +860,71 @@ export default function ProfilePage() {
                       <option value="gradient-ocean">تدرج محيط</option>
                       <option value="gradient-luxury">تدرج فاخر (أسود - بنفسجي غامق)</option>
                       <option value="gradient-elegant">تدرج أنيق (أسود - رمادي - أبيض)</option>
+                      <option value="gradient-deep-black">أسود جداً (نمط عميق)</option>
                       <option value="matrix">نمط الماتريكس</option>
                       <option value="stars">نجوم متحركة</option>
                       <option value="waves">أمواج متحركة</option>
                       <option value="geometric">أشكال هندسية</option>
                       <option value="rain">النمط الداكن (مطر متساقط)</option>
+                      <option value="custom">خلفية مخصصة (رفع من الجهاز)</option>
                     </select>
                   </div>
+
+                  {/* Background Upload Section */}
+                  {formData.backgroundType === "custom" && (
+                    <div className="space-y-4 p-4 border border-border/20 rounded-xl">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold">رفع خلفية مخصصة</h4>
+                          <p className="text-sm text-foreground/60">اختر صورة أو فيديو كخلفية</p>
+                        </div>
+                        <Button
+                          onClick={handleBackgroundUpload}
+                          disabled={uploadingBackground}
+                          className="flex items-center gap-2"
+                        >
+                          <Upload className={`w-4 h-4 ${uploadingBackground ? 'animate-spin' : ''}`} />
+                          {uploadingBackground ? "جاري الرفع..." : "رفع ملف"}
+                        </Button>
+                      </div>
+                      
+                      {/* Current Background Preview */}
+                      {formData.backgroundUrl && (
+                        <div className="flex items-center gap-4">
+                          <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-border/20">
+                            {formData.backgroundUrl.includes('.mp4') || formData.backgroundUrl.includes('.webm') ? (
+                              <video
+                                src={formData.backgroundUrl}
+                                className="w-full h-full object-cover"
+                                muted
+                              />
+                            ) : (
+                              <img
+                                src={formData.backgroundUrl}
+                                alt="Background Preview"
+                                className="w-full h-full object-cover"
+                              />
+                            )}
+                          </div>
+                          <div className="text-sm text-foreground/60">
+                            <p>الخلفية الحالية</p>
+                            <p>الحد الأقصى: 50 ميجابايت</p>
+                            <p>الفيديو: MP4, WebM, MOV</p>
+                            <p>الصور: JPG, PNG, GIF, WebP</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Hidden file input for background */}
+                      <input
+                        ref={backgroundFileInputRef}
+                        type="file"
+                        accept="image/*,video/*"
+                        onChange={handleBackgroundFileChange}
+                        className="hidden"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Save Button */}

@@ -14,6 +14,7 @@ const GradientBackground = ({ type }: { type: string }) => {
     "gradient-ocean": "bg-gradient-to-br from-teal-400 via-blue-500 to-purple-600",
     "gradient-luxury": "bg-gradient-to-br from-black via-purple-950 to-purple-900",
     "gradient-elegant": "bg-gradient-to-br from-black via-gray-800 to-gray-600",
+    "gradient-deep-black": "bg-black",
   };
   
   return (
@@ -91,38 +92,71 @@ const GeometricBackground = () => (
 
 const RainBackground = () => {
   return (
-    <div className="fixed inset-0 z-0 bg-gradient-to-b from-gray-900 via-gray-800 to-black overflow-hidden">
-      {/* Dark clouds effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-700/30 to-transparent" />
+    <div className="fixed inset-0 z-0 bg-black overflow-hidden">
+      {/* Very dark overlay for deep black effect */}
+      <div className="absolute inset-0 bg-black/95" />
       
-      {/* Rain drops */}
+      {/* Subtle rain drops */}
       <div className="absolute inset-0">
-        {Array.from({ length: 80 }).map((_, i) => (
+        {Array.from({ length: 60 }).map((_, i) => (
           <div
             key={i}
-            className="absolute w-0.5 h-8 bg-gradient-to-b from-blue-200/60 to-transparent"
+            className="absolute w-0.5 h-6 bg-gradient-to-b from-gray-500/20 to-transparent"
             style={{
               left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 2}s`,
-              animation: `rain-fall ${0.8 + Math.random() * 1.2}s linear infinite`,
+              animationDelay: `${Math.random() * 3}s`,
+              animation: `rain-fall ${1 + Math.random() * 2}s linear infinite`,
             }}
           />
         ))}
       </div>
       
-      {/* Lightning effect */}
+      {/* Very subtle lightning effect */}
       <div 
-        className="absolute inset-0 opacity-0 bg-white/5" 
+        className="absolute inset-0 opacity-0 bg-gray-200/5" 
         style={{
-          animation: `lightning-flash 6s ease-in-out infinite`,
-          animationDelay: `${Math.random() * 8}s`
+          animation: `lightning-flash 8s ease-in-out infinite`,
+          animationDelay: `${Math.random() * 12}s`
         }} 
       />
     </div>
   );
 };
 
-export default function CustomBackground({ backgroundType }: CustomBackgroundProps) {
+const CustomImageBackground = ({ backgroundUrl }: { backgroundUrl?: string | null }) => {
+  if (!backgroundUrl) return null;
+  
+  const isVideo = backgroundUrl.includes('.mp4') || backgroundUrl.includes('.webm') || backgroundUrl.includes('.mov') || backgroundUrl.includes('.avi');
+  
+  return (
+    <div className="fixed inset-0 z-0 overflow-hidden">
+      {isVideo ? (
+        <video
+          autoPlay
+          loop
+          muted
+          className="w-full h-full object-cover"
+          src={backgroundUrl}
+        />
+      ) : (
+        <img
+          src={backgroundUrl}
+          alt="Custom Background"
+          className="w-full h-full object-cover"
+        />
+      )}
+      {/* Dark overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/30" />
+    </div>
+  );
+};
+
+export default function CustomBackground({ backgroundType, backgroundUrl }: CustomBackgroundProps) {
+  // Custom image/video background takes priority
+  if (backgroundType === "custom" && backgroundUrl) {
+    return <CustomImageBackground backgroundUrl={backgroundUrl} />;
+  }
+
   if (backgroundType === "particles" || !backgroundType) {
     return <ParticlesBackground />;
   }
