@@ -43,7 +43,7 @@ export default function UserDashboard() {
   }, []);
 
   const { data: userProfile, isLoading } = useQuery<UserAccount>({
-    queryKey: ["/api/auth/user", currentUser],
+    queryKey: [`/api/auth/user/${currentUser}`],
     enabled: !!currentUser,
   });
 
@@ -53,7 +53,7 @@ export default function UserDashboard() {
       return response.json();
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user", currentUser] });
+      queryClient.invalidateQueries({ queryKey: [`/api/auth/user/${currentUser}`] });
       setIsEditing(false);
       toast({
         title: "تم تحديث الملف الشخصي",
