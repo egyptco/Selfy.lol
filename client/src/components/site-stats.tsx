@@ -25,27 +25,13 @@ export default function SiteStats() {
       className="fixed bottom-16 left-1/2 transform -translate-x-1/2 z-50"
     >
       <div className="glass-effect rounded-xl p-3 border border-border/20">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2 text-foreground/80">
-            <Eye className="w-4 h-4 text-accent" />
-            <div className="text-center">
-              <span className="text-sm font-medium block">
-                {stats.totalViews.toLocaleString()}
-              </span>
-              <p className="text-xs text-foreground/60">مشاهدات</p>
-            </div>
-          </div>
-          
-          <div className="w-px h-8 bg-border/30"></div>
-          
-          <div className="flex items-center gap-2 text-foreground/80">
-            <Users className="w-4 h-4 text-purple-400" />
-            <div className="text-center">
-              <span className="text-sm font-medium block">
-                {stats.uniqueVisitors.toLocaleString()}
-              </span>
-              <p className="text-xs text-foreground/60">زوار</p>
-            </div>
+        <div className="flex items-center gap-2 text-foreground/80">
+          <Eye className="w-4 h-4 text-accent" />
+          <div className="text-center">
+            <span className="text-sm font-medium block">
+              {stats.totalViews.toLocaleString()}
+            </span>
+            <p className="text-xs text-foreground/60">مشاهدات</p>
           </div>
         </div>
       </div>

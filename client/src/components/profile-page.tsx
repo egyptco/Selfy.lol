@@ -234,7 +234,6 @@ export default function ProfilePage() {
       socialLinks: JSON.stringify(filteredSocialLinks),
       shareableUrl: formData.shareableUrl,
       audioUrl: formData.audioUrl,
-      audioTitle: formData.audioTitle,
       discordId: formData.discordId,
       joinDate: formData.joinDate,
       socialIconStyle: formData.socialIconStyle,
@@ -777,16 +776,7 @@ export default function ProfilePage() {
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="audioTitle">اسم الأغنية</Label>
-                  <Input
-                    id="audioTitle"
-                    value={formData.audioTitle}
-                    onChange={(e) => setFormData({ ...formData, audioTitle: e.target.value })}
-                    className="mt-1"
-                    placeholder="اسم الأغنية أو الفنان"
-                  />
-                </div>
+
 
                 {/* Social Icons Customization */}
                 <div className="space-y-4 pt-4 border-t border-border/20">
