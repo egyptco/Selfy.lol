@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Settings, X, Save, RefreshCw, Share2, Copy, Check } from "lucide-react";
+import { Settings, X, Save, RefreshCw, Share2, Copy, Check, Upload, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,6 +36,8 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
   const [isOpen, setIsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     username: profile.username,
     status: profile.status,
@@ -91,6 +93,40 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
     },
   });
 
+  const uploadImageMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('avatar', file);
+      
+      const response = await fetch(`/api/profile/${profile.discordId}/upload-avatar`, {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/profile"] });
+      toast({
+        title: "تم الرفع",
+        description: "تم رفع صورة الملف الشخصي بنجاح",
+      });
+      setUploading(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "خطأ",
+        description: "فشل في رفع الصورة",
+        variant: "destructive",
+      });
+      setUploading(false);
+    },
+  });
+
   const handleSave = () => {
     const socialLinksObj = JSON.parse(formData.socialLinks || "{}");
     updateProfileMutation.mutate({
@@ -107,6 +143,18 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
 
   const handleSyncDiscord = () => {
     syncDiscordMutation.mutate();
+  };
+
+  const handleImageUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploading(true);
+      uploadImageMutation.mutate(file);
+    }
   };
 
   const shareUrl = `${window.location.origin}/share/${profile.shareableUrl || profile.discordId}`;
@@ -221,6 +269,49 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
               </div>
 
               <div className="space-y-6">
+                {/* Profile Image Upload */}
+                <div className="space-y-4 p-4 border border-border/20 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold">صورة الملف الشخصي</h3>
+                      <p className="text-sm text-foreground/60">رفع صورة جديدة للملف الشخصي</p>
+                    </div>
+                    <Button
+                      onClick={handleImageUpload}
+                      disabled={uploading}
+                      className="flex items-center gap-2"
+                    >
+                      <Upload className={`w-4 h-4 ${uploading ? 'animate-spin' : ''}`} />
+                      {uploading ? "جاري الرفع..." : "رفع صورة"}
+                    </Button>
+                  </div>
+                  
+                  {/* Current Profile Image Preview */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-border/20">
+                      <img
+                        src={profile.avatarUrl || `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random() * 5)}.png`}
+                        alt="Current Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="text-sm text-foreground/60">
+                      <p>الصورة الحالية</p>
+                      <p>الحد الأقصى: 5 ميجابايت</p>
+                      <p>التنسيقات المدعومة: JPG, PNG, GIF, WebP</p>
+                    </div>
+                  </div>
+
+                  {/* Hidden file input */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </div>
+
                 {/* Discord Settings */}
                 <div className="space-y-4 p-4 border border-border/20 rounded-xl">
                   <div className="flex items-center justify-between">

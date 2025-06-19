@@ -92,7 +92,7 @@ export default function ProfilePage() {
       
       {/* Controls */}
       <ThemeSwitcher />
-      <AudioPlayer />
+      <AudioPlayer audioUrl={profile?.audioUrl} />
       <SettingsPanel profile={profile} isOwner={profile.isOwner} />
       
 

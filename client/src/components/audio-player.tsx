@@ -1,8 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX, Music } from "lucide-react";
 
-export default function AudioPlayer() {
+interface AudioPlayerProps {
+  audioUrl?: string | null;
+}
+
+export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -15,12 +19,19 @@ export default function AudioPlayer() {
     audio.muted = isMuted;
 
     const handleEnded = () => setIsPlaying(false);
+    const handleLoadError = () => {
+      console.error("Audio failed to load:", audioUrl);
+      setIsPlaying(false);
+    };
+
     audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("error", handleLoadError);
 
     return () => {
       audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("error", handleLoadError);
     };
-  }, [isMuted]);
+  }, [isMuted, audioUrl]);
 
   const toggleAudio = async () => {
     const audio = audioRef.current;
@@ -49,6 +60,11 @@ export default function AudioPlayer() {
     audio.muted = newMuted;
   };
 
+  // Don't render if no audio URL is provided
+  if (!audioUrl) {
+    return null;
+  }
+
   return (
     <>
       <motion.div
@@ -63,8 +79,11 @@ export default function AudioPlayer() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center text-white hover:shadow-lg transition-all duration-300"
+            title={audioUrl ? "تشغيل/إيقاف الموسيقى" : "لا توجد موسيقى"}
           >
-            {isMuted || !isPlaying ? (
+            {!audioUrl ? (
+              <Music className="w-5 h-5 opacity-50" />
+            ) : isMuted || !isPlaying ? (
               <VolumeX className="w-5 h-5" />
             ) : (
               <Volume2 className="w-5 h-5" />
@@ -74,12 +93,14 @@ export default function AudioPlayer() {
       </motion.div>
 
       {/* Hidden audio element */}
-      <audio
-        ref={audioRef}
-        loop
-        preload="none"
-        src="https://www.matb3aa.com/music/Marwan-Pablo/OGRA-MARWAN.PABLO-MaTb3aa.Com.mp3"
-      />
+      {audioUrl && (
+        <audio
+          ref={audioRef}
+          loop
+          preload="none"
+          src={audioUrl}
+        />
+      )}
     </>
   );
 }

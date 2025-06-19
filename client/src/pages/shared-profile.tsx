@@ -88,7 +88,7 @@ export default function SharedProfile() {
       
       {/* Controls */}
       <ThemeSwitcher />
-      <AudioPlayer />
+      <AudioPlayer audioUrl={profile?.audioUrl} />
       <SettingsPanel profile={profile} isOwner={false} />
       
       {/* View Counter */}

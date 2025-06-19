@@ -2,6 +2,40 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertProfileSchema } from "@shared/schema";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+
+// Configure multer for file uploads
+const uploadsDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage_multer = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage_multer,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get profile by Discord ID
@@ -143,6 +177,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching shared profile:", error);
       res.status(500).json({ message: "Internal server error" });
     }
+  });
+
+  // Upload profile image
+  app.post("/api/profile/:discordId/upload-avatar", upload.single('avatar'), async (req, res) => {
+    try {
+      const { discordId } = req.params;
+      
+      if (!req.file) {
+        return res.status(400).json({ message: "No image file provided" });
+      }
+      
+      const avatarUrl = `/uploads/${req.file.filename}`;
+      const updatedProfile = await storage.updateProfile(discordId, { avatarUrl });
+      
+      if (!updatedProfile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      res.json({ 
+        message: "Profile image updated successfully", 
+        avatarUrl,
+        profile: updatedProfile 
+      });
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Serve uploaded files
+  app.use('/uploads', (req, res, next) => {
+    const uploadsPath = path.join(process.cwd(), 'uploads');
+    return require('express').static(uploadsPath)(req, res, next);
   });
 
   // Sync Discord data
