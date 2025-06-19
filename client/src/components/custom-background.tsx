@@ -89,6 +89,39 @@ const GeometricBackground = () => (
   </div>
 );
 
+const RainBackground = () => {
+  return (
+    <div className="fixed inset-0 z-0 bg-gradient-to-b from-gray-900 via-gray-800 to-black overflow-hidden">
+      {/* Dark clouds effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-700/30 to-transparent" />
+      
+      {/* Rain drops */}
+      <div className="absolute inset-0">
+        {Array.from({ length: 80 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-0.5 h-8 bg-gradient-to-b from-blue-200/60 to-transparent"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 2}s`,
+              animation: `rain-fall ${0.8 + Math.random() * 1.2}s linear infinite`,
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Lightning effect */}
+      <div 
+        className="absolute inset-0 opacity-0 bg-white/5" 
+        style={{
+          animation: `lightning-flash 6s ease-in-out infinite`,
+          animationDelay: `${Math.random() * 8}s`
+        }} 
+      />
+    </div>
+  );
+};
+
 export default function CustomBackground({ backgroundType }: CustomBackgroundProps) {
   if (backgroundType === "particles" || !backgroundType) {
     return <ParticlesBackground />;
@@ -112,6 +145,10 @@ export default function CustomBackground({ backgroundType }: CustomBackgroundPro
 
   if (backgroundType === "geometric") {
     return <GeometricBackground />;
+  }
+
+  if (backgroundType === "rain") {
+    return <RainBackground />;
   }
 
   return <ParticlesBackground />;

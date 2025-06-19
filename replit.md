@@ -118,6 +118,7 @@ Changelog:
 - June 19, 2025. Fixed audio player to always display control button even without audio URL
 - June 19, 2025. Added luxury gradient backgrounds (black-to-dark-purple and black-to-gray-white)
 - June 19, 2025. Cleaned up default social media links from demo profile
+- June 19, 2025. Added immersive dark rain theme with realistic falling raindrops and lightning effects
 
 ## User Preferences
 

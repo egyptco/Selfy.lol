@@ -816,6 +816,7 @@ export default function ProfilePage() {
                       <option value="stars">نجوم متحركة</option>
                       <option value="waves">أمواج متحركة</option>
                       <option value="geometric">أشكال هندسية</option>
+                      <option value="rain">النمط الداكن (مطر متساقط)</option>
                     </select>
                   </div>
                 </div>
