@@ -91,10 +91,7 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
     return <Volume2 className="w-4 h-4" />;
   };
 
-  // Don't render if no audio URL is provided
-  if (!audioUrl) {
-    return null;
-  }
+  // Always render the audio button, even without audio URL
 
   return (
     <>

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Eye, Settings, Share2, Palette, X, Save, Copy, Check, Upload } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { apiRequest } from "@/lib/queryClient";
-import ParticlesBackground from "./particles-background";
+import CustomBackground from "./custom-background";
 import SocialIcons from "./social-icons";
 import AudioPlayer from "./audio-player";
 import Footer from "./footer";
@@ -277,7 +277,10 @@ export default function ProfilePage() {
 
   return (
     <div className={`min-h-screen overflow-hidden relative theme-transition ${theme}`}>
-      <ParticlesBackground />
+      <CustomBackground 
+        backgroundType={profile.backgroundType || "particles"} 
+        backgroundUrl={profile.backgroundUrl} 
+      />
       
       {/* Fixed Control Buttons */}
       <div className="fixed top-6 right-6 z-50 flex flex-col gap-3">
@@ -728,16 +731,31 @@ export default function ProfilePage() {
                   />
                 </div>
 
-                {/* Audio URL */}
-                <div>
-                  <Label htmlFor="audioUrl">رابط الموسيقى</Label>
-                  <Input
-                    id="audioUrl"
-                    value={formData.audioUrl}
-                    onChange={(e) => setFormData({ ...formData, audioUrl: e.target.value })}
-                    className="mt-1"
-                    placeholder="https://youtube.com/watch?v=... أو https://spotify.com/track/... أو رابط MP3"
-                  />
+                {/* Audio Settings */}
+                <div className="space-y-4 p-4 border border-border/20 rounded-xl">
+                  <h3 className="font-semibold">إعدادات الموسيقى</h3>
+                  
+                  <div>
+                    <Label htmlFor="audioTitle">عنوان الأغنية</Label>
+                    <Input
+                      id="audioTitle"
+                      value={formData.audioTitle}
+                      onChange={(e) => setFormData({ ...formData, audioTitle: e.target.value })}
+                      className="mt-1"
+                      placeholder="اسم الأغنية أو الفنان"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="audioUrl">رابط الموسيقى</Label>
+                    <Input
+                      id="audioUrl"
+                      value={formData.audioUrl}
+                      onChange={(e) => setFormData({ ...formData, audioUrl: e.target.value })}
+                      className="mt-1"
+                      placeholder="https://youtube.com/watch?v=... أو https://spotify.com/track/... أو رابط MP3"
+                    />
+                  </div>
                 </div>
 
 
