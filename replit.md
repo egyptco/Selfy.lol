@@ -111,6 +111,10 @@ Changelog:
 - June 19, 2025. Added advanced audio controls with mute/unmute toggle, volume slider, and interactive control panel
 - June 19, 2025. Repositioned site statistics box to bottom-right for better alignment with copyright footer
 - June 19, 2025. Removed LinkedIn, Twitch, and Twitter/X from social media options per user request
+- June 19, 2025. Added comprehensive social media icon customization (default, transparent, colored, dynamic styles)
+- June 19, 2025. Implemented custom background support (particles, image, video) with file upload capability
+- June 19, 2025. Added "Now Playing" display component for current music with YouTube/Spotify source detection
+- June 19, 2025. Enhanced audio settings with title field for better music identification
 
 ## User Preferences
 

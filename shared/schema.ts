@@ -40,6 +40,11 @@ export const profiles = pgTable("profiles", {
   shareableUrl: text("shareable_url"),
   theme: text("theme").default("theme-dark"),
   audioUrl: text("audio_url"),
+  audioTitle: text("audio_title"),
+  socialIconStyle: text("social_icon_style").default("default"), // default, transparent, colored, dynamic
+  socialIconColor: text("social_icon_color").default("#8B5CF6"),
+  backgroundType: text("background_type").default("particles"), // particles, image, video
+  backgroundUrl: text("background_url"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

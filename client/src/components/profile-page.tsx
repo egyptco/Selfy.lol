@@ -32,6 +32,11 @@ interface Profile {
   shareableUrl: string | null;
   theme: string;
   audioUrl: string | null;
+  audioTitle: string | null;
+  socialIconStyle: string | null;
+  socialIconColor: string | null;
+  backgroundType: string | null;
+  backgroundUrl: string | null;
 }
 
 export default function ProfilePage() {
@@ -57,6 +62,11 @@ export default function ProfilePage() {
     socialLinks: profile?.socialLinks || "{}",
     shareableUrl: profile?.shareableUrl || "",
     audioUrl: profile?.audioUrl || "",
+    audioTitle: profile?.audioTitle || "",
+    socialIconStyle: profile?.socialIconStyle || "default",
+    socialIconColor: profile?.socialIconColor || "#8B5CF6",
+    backgroundType: profile?.backgroundType || "particles",
+    backgroundUrl: profile?.backgroundUrl || "",
     discordId: profile?.discordId || "",
     joinDate: profile?.joinDate || "",
   });
@@ -83,6 +93,11 @@ export default function ProfilePage() {
         socialLinks: profile.socialLinks,
         shareableUrl: profile.shareableUrl || "",
         audioUrl: profile.audioUrl || "",
+        audioTitle: profile.audioTitle || "",
+        socialIconStyle: profile.socialIconStyle || "default",
+        socialIconColor: profile.socialIconColor || "#8B5CF6",
+        backgroundType: profile.backgroundType || "particles",
+        backgroundUrl: profile.backgroundUrl || "",
         discordId: profile.discordId,
         joinDate: profile.joinDate || "",
       });
@@ -410,7 +425,11 @@ export default function ProfilePage() {
           className="mb-12"
         >
           <div className="mobile-grid">
-            <SocialIcons socialLinks={socialLinks} />
+            <SocialIcons 
+              socialLinks={socialLinks}
+              iconStyle={profile.socialIconStyle || "default"}
+              iconColor={profile.socialIconColor || "#8B5CF6"}
+            />
           </div>
         </motion.div>
 
@@ -728,8 +747,95 @@ export default function ProfilePage() {
                     value={formData.audioUrl}
                     onChange={(e) => setFormData({ ...formData, audioUrl: e.target.value })}
                     className="mt-1"
-                    placeholder="https://example.com/audio.mp3"
+                    placeholder="https://youtube.com/watch?v=... أو https://spotify.com/track/... أو رابط MP3"
                   />
+                </div>
+
+                <div>
+                  <Label htmlFor="audioTitle">اسم الأغنية</Label>
+                  <Input
+                    id="audioTitle"
+                    value={formData.audioTitle}
+                    onChange={(e) => setFormData({ ...formData, audioTitle: e.target.value })}
+                    className="mt-1"
+                    placeholder="اسم الأغنية أو الفنان"
+                  />
+                </div>
+
+                {/* Social Icons Customization */}
+                <div className="space-y-4 pt-4 border-t border-border/20">
+                  <h3 className="text-lg font-semibold text-foreground">تخصيص أيقونات السوشيال ميديا</h3>
+                  
+                  <div>
+                    <Label htmlFor="socialIconStyle">نمط الأيقونات</Label>
+                    <select
+                      id="socialIconStyle"
+                      value={formData.socialIconStyle}
+                      onChange={(e) => setFormData({ ...formData, socialIconStyle: e.target.value })}
+                      className="mt-1 w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                    >
+                      <option value="default">الافتراضي (ألوان المنصات)</option>
+                      <option value="transparent">شفاف</option>
+                      <option value="colored">لون مخصص</option>
+                      <option value="dynamic">ديناميكي (ألوان متحركة)</option>
+                    </select>
+                  </div>
+
+                  {formData.socialIconStyle === "colored" && (
+                    <div>
+                      <Label htmlFor="socialIconColor">لون الأيقونات</Label>
+                      <Input
+                        id="socialIconColor"
+                        type="color"
+                        value={formData.socialIconColor}
+                        onChange={(e) => setFormData({ ...formData, socialIconColor: e.target.value })}
+                        className="mt-1 h-10"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Background Customization */}
+                <div className="space-y-4 pt-4 border-t border-border/20">
+                  <h3 className="text-lg font-semibold text-foreground">تخصيص الخلفية</h3>
+                  
+                  <div>
+                    <Label htmlFor="backgroundType">نوع الخلفية</Label>
+                    <select
+                      id="backgroundType"
+                      value={formData.backgroundType}
+                      onChange={(e) => setFormData({ ...formData, backgroundType: e.target.value })}
+                      className="mt-1 w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                    >
+                      <option value="particles">الافتراضي (جزيئات متحركة)</option>
+                      <option value="image">صورة مخصصة</option>
+                      <option value="video">فيديو مخصص</option>
+                    </select>
+                  </div>
+
+                  {(formData.backgroundType === "image" || formData.backgroundType === "video") && (
+                    <div>
+                      <Label htmlFor="backgroundUrl">رابط {formData.backgroundType === "image" ? "الصورة" : "الفيديو"}</Label>
+                      <Input
+                        id="backgroundUrl"
+                        value={formData.backgroundUrl}
+                        onChange={(e) => setFormData({ ...formData, backgroundUrl: e.target.value })}
+                        className="mt-1"
+                        placeholder={`رابط ${formData.backgroundType === "image" ? "الصورة" : "الفيديو"} أو ارفع ملف`}
+                      />
+                      <input
+                        type="file"
+                        accept={formData.backgroundType === "image" ? "image/*" : "video/*"}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            console.log("Upload file:", file);
+                          }
+                        }}
+                        className="mt-2 text-sm text-foreground/70"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Save Button */}
