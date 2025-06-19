@@ -10,7 +10,7 @@ interface AudioPlayerProps {
 export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(30);
+  const [volume, setVolume] = useState(80);
   const [showControls, setShowControls] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -35,6 +35,31 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
       audio.removeEventListener("error", handleLoadError);
     };
   }, [isMuted, volume, audioUrl]);
+
+  // Auto-play audio when audioUrl changes
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !audioUrl) return;
+
+    // Only auto-play direct audio files
+    if (!isDirectAudioFile(audioUrl)) return;
+
+    const playAudio = async () => {
+      try {
+        audio.volume = 0.8; // Set to 80% volume
+        setVolume(80);
+        await audio.play();
+        setIsPlaying(true);
+        setIsMuted(false);
+      } catch (error) {
+        console.error("Auto-play failed:", error);
+      }
+    };
+
+    // Small delay to ensure the audio element is ready
+    const timer = setTimeout(playAudio, 500);
+    return () => clearTimeout(timer);
+  }, [audioUrl]);
 
   const isDirectAudioFile = (url: string) => {
     return url.endsWith('.mp3') || url.endsWith('.wav') || url.endsWith('.ogg') || url.endsWith('.m4a');

@@ -25,6 +25,8 @@ interface Profile {
   shareableUrl: string | null;
   theme: string;
   audioUrl: string | null;
+  nameStyle?: string | null;
+  nameColor?: string | null;
 }
 
 interface SettingsPanelProps {
@@ -47,10 +49,29 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
     shareableUrl: profile.shareableUrl || "",
     audioUrl: profile.audioUrl || "",
     discordId: profile.discordId,
+    nameStyle: (profile as any).nameStyle || "default",
+    nameColor: (profile as any).nameColor || "#FFFFFF",
   });
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const getNameStyleClass = (style: string) => {
+    switch (style) {
+      case 'gradient':
+        return 'name-gradient';
+      case 'shadow':
+        return 'name-shadow';
+      case 'glow':
+        return 'name-glow';
+      case 'neon':
+        return 'name-neon';
+      case 'rainbow':
+        return 'name-rainbow';
+      default:
+        return '';
+    }
+  };
 
   const updateProfileMutation = useMutation({
     mutationFn: async (updates: Partial<Profile>) => {
@@ -138,6 +159,8 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
       shareableUrl: formData.shareableUrl,
       audioUrl: formData.audioUrl,
       discordId: formData.discordId,
+      nameStyle: formData.nameStyle,
+      nameColor: formData.nameColor,
     });
   };
 
@@ -491,6 +514,63 @@ export default function SettingsPanel({ profile, isOwner }: SettingsPanelProps) 
                     className="mt-1"
                     placeholder="https://example.com/audio.mp3"
                   />
+                </div>
+
+                {/* Name Customization */}
+                <div className="space-y-4 p-4 border border-border/20 rounded-xl">
+                  <h3 className="font-semibold">تخصيص الاسم</h3>
+                  
+                  <div>
+                    <Label htmlFor="nameStyle">نمط الاسم</Label>
+                    <select
+                      id="nameStyle"
+                      value={formData.nameStyle}
+                      onChange={(e) => setFormData({ ...formData, nameStyle: e.target.value })}
+                      className="w-full mt-1 px-3 py-2 bg-background border border-border rounded-md"
+                    >
+                      <option value="default">عادي</option>
+                      <option value="gradient">متدرج الألوان</option>
+                      <option value="shadow">مع ظل</option>
+                      <option value="glow">متوهج</option>
+                      <option value="neon">نيون</option>
+                      <option value="rainbow">قوس قزح</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="nameColor">لون الاسم</Label>
+                    <div className="flex items-center gap-3 mt-1">
+                      <input
+                        type="color"
+                        id="nameColor"
+                        value={formData.nameColor}
+                        onChange={(e) => setFormData({ ...formData, nameColor: e.target.value })}
+                        className="w-12 h-10 rounded border border-border cursor-pointer"
+                      />
+                      <Input
+                        value={formData.nameColor}
+                        onChange={(e) => setFormData({ ...formData, nameColor: e.target.value })}
+                        className="flex-1"
+                        placeholder="#FFFFFF"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Preview */}
+                  <div className="p-3 bg-foreground/5 rounded-lg">
+                    <Label className="text-sm">معاينة الاسم:</Label>
+                    <div className="mt-2">
+                      <span 
+                        className={`text-2xl font-bold ${getNameStyleClass(formData.nameStyle)}`}
+                        style={{ 
+                          color: formData.nameStyle === 'default' ? formData.nameColor : undefined,
+                          '--name-color': formData.nameColor 
+                        } as any}
+                      >
+                        {formData.username}
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Save Button */}

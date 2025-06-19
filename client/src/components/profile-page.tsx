@@ -64,6 +64,23 @@ export default function ProfilePage() {
   // Check if current user is the owner of this profile
   const isOwner = currentUser && profile && profile.discordId === currentUser;
 
+  const getNameStyleClass = (style: string) => {
+    switch (style) {
+      case 'gradient':
+        return 'name-gradient';
+      case 'shadow':
+        return 'name-shadow';
+      case 'glow':
+        return 'name-glow';
+      case 'neon':
+        return 'name-neon';
+      case 'rainbow':
+        return 'name-rainbow';
+      default:
+        return 'gradient-text';
+    }
+  };
+
   const [formData, setFormData] = useState({
     username: profile?.username || "",
     status: profile?.status || "",
@@ -512,7 +529,13 @@ export default function ProfilePage() {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="mb-4"
         >
-          <h1 className="mobile-text text-4xl md:text-5xl font-bold text-center gradient-text">
+          <h1 
+            className={`mobile-text text-4xl md:text-5xl font-bold text-center ${getNameStyleClass((profile as any).nameStyle || 'default')}`}
+            style={{ 
+              color: (profile as any).nameStyle === 'default' ? ((profile as any).nameColor || '#FFFFFF') : undefined,
+              '--name-color': (profile as any).nameColor || '#FFFFFF'
+            } as any}
+          >
             {profile.username}
           </h1>
         </motion.div>

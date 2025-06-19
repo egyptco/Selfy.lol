@@ -243,3 +243,84 @@
     }
   }
 }
+
+/* Name Style Effects */
+.name-gradient {
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 3s ease infinite;
+}
+
+.name-shadow {
+  text-shadow: 
+    0 0 5px var(--name-color, #ffffff),
+    0 0 10px var(--name-color, #ffffff),
+    0 0 15px var(--name-color, #ffffff);
+}
+
+.name-glow {
+  text-shadow: 
+    0 0 5px var(--name-color, #ffffff),
+    0 0 10px var(--name-color, #ffffff),
+    0 0 15px var(--name-color, #ffffff),
+    0 0 20px var(--name-color, #ffffff),
+    0 0 35px var(--name-color, #ffffff);
+  animation: glow-pulse 2s ease-in-out infinite alternate;
+}
+
+.name-neon {
+  color: var(--name-color, #ffffff);
+  text-shadow: 
+    0 0 5px var(--name-color, #ffffff),
+    0 0 10px var(--name-color, #ffffff),
+    0 0 15px var(--name-color, #ffffff),
+    0 0 20px var(--name-color, #ffffff);
+  animation: neon-flicker 1.5s linear infinite;
+}
+
+.name-rainbow {
+  background: linear-gradient(45deg, 
+    #ff0000, #ff7f00, #ffff00, #00ff00, 
+    #0000ff, #4b0082, #9400d3, #ff0000);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-slide 2s linear infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes glow-pulse {
+  from {
+    text-shadow: 
+      0 0 5px var(--name-color, #ffffff),
+      0 0 10px var(--name-color, #ffffff),
+      0 0 15px var(--name-color, #ffffff),
+      0 0 20px var(--name-color, #ffffff);
+  }
+  to {
+    text-shadow: 
+      0 0 10px var(--name-color, #ffffff),
+      0 0 20px var(--name-color, #ffffff),
+      0 0 30px var(--name-color, #ffffff),
+      0 0 40px var(--name-color, #ffffff);
+  }
+}
+
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes rainbow-slide {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}

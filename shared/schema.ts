@@ -61,6 +61,8 @@ export const profiles = pgTable("profiles", {
   socialIconColor: text("social_icon_color").default("#8B5CF6"),
   backgroundType: text("background_type").default("particles"), // particles, image, video
   backgroundUrl: text("background_url"),
+  nameStyle: text("name_style").default("default"), // default, gradient, shadow, glow, neon, rainbow
+  nameColor: text("name_color").default("#FFFFFF"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
