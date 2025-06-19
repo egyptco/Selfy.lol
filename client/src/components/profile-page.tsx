@@ -61,6 +61,9 @@ export default function ProfilePage() {
     enabled: !!currentUser,
   });
 
+  // Check if current user is the owner of this profile
+  const isOwner = currentUser && profile && profile.discordId === currentUser;
+
   const [formData, setFormData] = useState({
     username: profile?.username || "",
     status: profile?.status || "",
@@ -357,30 +360,32 @@ export default function ProfilePage() {
       
       {/* Fixed Control Buttons */}
       <div className="fixed top-6 right-6 z-50 flex flex-col gap-3">
-        {/* Theme Switcher */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <div className="glass-effect rounded-full p-2">
-            <motion.button
-              onClick={() => {
-                console.log("Theme button clicked, switching theme");
-                switchTheme();
-              }}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="w-12 h-12 rounded-full bg-black border-2 border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
-              title="تغيير المظهر"
-            >
-              <Palette className="w-5 h-5" />
-            </motion.button>
-          </div>
-        </motion.div>
+        {/* Theme Switcher - Only for Owner */}
+        {isOwner && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="glass-effect rounded-full p-2">
+              <motion.button
+                onClick={() => {
+                  console.log("Theme button clicked, switching theme");
+                  switchTheme();
+                }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-12 h-12 rounded-full bg-black border-2 border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
+                title="تغيير المظهر"
+              >
+                <Palette className="w-5 h-5" />
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
 
-        {/* Settings Button */}
-        {profile && (
+        {/* Settings Button - Only for Owner */}
+        {isOwner && profile && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -403,7 +408,40 @@ export default function ProfilePage() {
           </motion.div>
         )}
 
-        {/* Share Button */}
+        {/* Audio Controls - For everyone */}
+        {profile?.audioUrl && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.25 }}
+          >
+            <div className="glass-effect rounded-full p-2">
+              <motion.button
+                onClick={() => {
+                  // Toggle audio play/pause
+                  const audioElement = document.querySelector('audio');
+                  if (audioElement) {
+                    if (audioElement.paused) {
+                      audioElement.play();
+                    } else {
+                      audioElement.pause();
+                    }
+                  }
+                }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-12 h-12 rounded-full bg-black border-2 border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300"
+                title="تشغيل/إيقاف الموسيقى"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.747l-4.5-3.375a1 1 0 010-1.494l4.5-3.375zM14 5a1 1 0 011.414 0l1.586 1.586a3 3 0 010 4.242L15.414 12A1 1 0 0114 10.586l.586-.586a1 1 0 000-1.414L14 8.414A1 1 0 0114 7z" clipRule="evenodd" />
+                </svg>
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Share Button - For everyone */}
         {profile && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}

@@ -33,22 +33,31 @@ export default function AuthButtons() {
     // المستخدم مسجل الدخول - إظهار أزرار الملف الشخصي وتسجيل الخروج
     return (
       <>
-        {/* زر لوحة التحكم - أسفل اليسار */}
+        {/* زر لوحة التحكم */}
         <Button
           onClick={() => setLocation("/dashboard")}
-          className="fixed bottom-20 left-6 z-50 bg-black border-2 border-white/20 text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 shadow-lg"
+          className="fixed bottom-36 left-6 z-50 bg-black border-2 border-white/20 text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 shadow-lg"
         >
           <User className="w-4 h-4 ml-2" />
           لوحة التحكم
         </Button>
 
-        {/* زر البروفايل العام - أسفل اليسار تحت لوحة التحكم */}
+        {/* زر تحرير البروفايل العام */}
         <Button
           onClick={() => setLocation("/profile")}
-          className="fixed bottom-6 left-6 z-50 bg-purple-600 border-2 border-purple-400 text-white hover:bg-purple-700 hover:border-purple-500 transition-all duration-300 shadow-lg"
+          className="fixed bottom-20 left-6 z-50 bg-purple-600 border-2 border-purple-400 text-white hover:bg-purple-700 hover:border-purple-500 transition-all duration-300 shadow-lg"
+        >
+          <Settings className="w-4 h-4 ml-2" />
+          تحرير البروفايل
+        </Button>
+
+        {/* زر مشاهدة البروفايل العام */}
+        <Button
+          onClick={() => setLocation(`/public/${currentUser}`)}
+          className="fixed bottom-6 left-6 z-50 bg-green-600 border-2 border-green-400 text-white hover:bg-green-700 hover:border-green-500 transition-all duration-300 shadow-lg"
         >
           <Globe className="w-4 h-4 ml-2" />
-          البروفايل العام
+          مشاهدة البروفايل
         </Button>
 
         {/* زر تسجيل الخروج - أسفل اليمين */}
