@@ -1,6 +1,6 @@
 services:
 - type: web
-  name: selfy-lol
+  name: selfy
   env: node
   plan: free
   branch: main
